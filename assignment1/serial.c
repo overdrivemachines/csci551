@@ -22,30 +22,19 @@ int main()
 {
 	double a = 100;	//	Lower Limit
 	double b = 600;	//	Upper Limit
-	double n = 1;	//	Total Trapezoids
-	double h, x, sum = 0;
+	double n;	//	Total Trapezoids (to be calculated)
 	double true_value = 4003.72090015132682659;
 
-	printf("n, sum, relative true error\n");
-	do
-	{
-		//	Calculate width of each trapeziod
-		h = (b - a) / n;
-		sum = 0;
+	// Maxima of 2nd derivative of f(x)
+	// maximize(d/dx(d/dx(cos(x/3)-2 cos(x/5)+5 sin(x/4)+8))) from 100 to 600
+	double m2 = 0.4652207535280099905181060452713048790500;
 
-		for (double i = 0; i <= n; i++)
-		{
-			x = a + i * h;
-			sum = sum + f(x); 
-		}
+	double allowed_error = 0.5 * pow(10,-14) * true_value;
 
-		sum = h * (sum - (f(a) / 2) - (f(b) / 2));
+	n = ceil(sqrt(m2*pow((b-a), 3)/(12*allowed_error)));
 
-		printf("%.0f %f %.15f\n", n, sum, (true_value - sum) / true_value);
-
-		n = n * 2;
-
-	} while (fabs((true_value - sum) / true_value) > (0.5 * (10^(-14))));
+	printf("n = %f\n", n);
+	
 
 	return EXIT_SUCCESS;
 }
@@ -54,3 +43,24 @@ double f(double x)
 {
 	return (cos(x/3) - 2*cos(x/5) + 5*sin(x/4) + 8); 
 }
+
+// Bruteforce way
+// do
+// {
+// 	//	Calculate width of each trapeziod
+// 	h = (b - a) / n;
+// 	sum = 0;
+
+// 	for (double i = 0; i <= n; i++)
+// 	{
+// 		x = a + i * h;
+// 		sum = sum + f(x); 
+// 	}
+
+// 	sum = h * (sum - (f(a) / 2) - (f(b) / 2));
+
+// 	printf("%.0f %f %.15f\n", n, sum, (true_value - sum) / true_value);
+
+// 	n = n * 2;
+
+// } while (fabs((true_value - sum) / true_value) > (0.5 * (10^(-14))));
