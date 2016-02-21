@@ -10,11 +10,13 @@
 // Integrate[8 - 2 Cos[x/5] + Cos[x/3] + 5 Sin[x/4], {x, 100, 600}]
 // 4003.7209001513268265929134113327386949159025889356124309131658087
 // 4003.7209001513
+// Formula used: https://math.uc.edu/~halpern/calc2/ho/Errorfornumericalintegation.pdf
+// Error = | (Integral(f(x))dx from a to b) - Sum of Trapezoid areas | <= M2 * ((b-a)^3) / (12*(n^2))
+
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <float.h>	//	For DBL_MAX
 
 double f(double x);
 
@@ -23,7 +25,7 @@ int main()
 	double a = 100;	//	Lower Limit
 	double b = 600;	//	Upper Limit
 	double n;	//	Total Trapezoids (to be calculated)
-	double true_value = 4003.72090015132682659;
+	double true_value = 4003.7209001513268265;
 
 	// Maxima of 2nd derivative of f(x)
 	// maximize(d/dx(d/dx(cos(x/3)-2 cos(x/5)+5 sin(x/4)+8))) from 100 to 600
