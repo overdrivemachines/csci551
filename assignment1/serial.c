@@ -36,7 +36,7 @@ int main()
 
 	double allowed_error = 0.5 * pow(10,-14) * true_value;
 
-	n = ceil(sqrt(m2*pow((b-a), 3)/(12*allowed_error)));
+	n = floor(sqrt(m2*pow((b-a), 3)/(12*allowed_error)));
 
 	printf("Number of Trapezoids n = %.0f\n", n);
 
