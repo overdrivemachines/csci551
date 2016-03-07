@@ -18,13 +18,14 @@
 #include <math.h>
 
 double f(double x);
+double integrate(int a, int b, int n);
 
 int main()
 {
 	double a = 100;	//	Lower Limit
 	double b = 600;	//	Upper Limit
 	double n = 1;	//	Total Trapezoids (to be calculated)
-	double h, x, sum;
+	double sum;
 	double max_arte = 0.5 * pow(10,-14);
 	double arte;	//	Calculated for every n
 	double true_value = 4003.7209001513268265;	//	True value of integral (using 20 digits)
@@ -39,19 +40,7 @@ int main()
 	// Bruteforce way
 	do
 	{
-		//	Calculate width of each trapeziod
-		h = (b - a) / n;
-		sum = 0;
-
-		// Add the areas of all the trapezoids
-		for (double i = 0; i <= n; i++)
-		{
-			x = a + i * h;
-			sum = sum + f(x); 
-		}
-
-		// The first and last terms need to be halved
-		sum = h * (sum - (f(a) / 2) - (f(b) / 2));
+		sum = integrate(a, b, n);
 
 		// Calculate absolute relative true error
 		arte = (true_value - sum) / true_value;
@@ -67,10 +56,10 @@ int main()
 	// Print results
 
 	printf("Number of Trapezoids n = %.0f\n", n);
-	printf("True Value = %.15f\n", true_value);
-	printf("Approximate Value = %.15f\n", sum);
-	printf("True Error = %.15f\n", (true_value - sum));
-	printf("Relative True Error = %.15f\n", (true_value - sum) / true_value);
+	printf("True Value = %.15e\n", true_value);
+	printf("Approximate Value = %.15e\n", sum);
+	printf("True Error = %.15e\n", (true_value - sum));
+	printf("Relative True Error = %.15e\n", (true_value - sum) / true_value);
 
 	return EXIT_SUCCESS;
 }
@@ -78,5 +67,26 @@ int main()
 double f(double x)
 {
 	return (cos(x/3) - 2*cos(x/5) + 5*sin(x/4) + 8); 
+}
+
+double integrate(int a, int b, int n)
+{
+	double h, x, sum;
+
+	//	Calculate width of each trapeziod
+	h = (b - a) / (double) n;
+	sum = 0;
+
+	// Add the areas of all the trapezoids
+	for (double i = 0; i <= n; i++)
+	{
+		x = a + i * h;
+		sum = sum + f(x); 
+	}
+
+	// The first and last terms need to be halved
+	sum = h * (sum - (f(a) / 2) - (f(b) / 2));
+
+	return sum;
 }
 
