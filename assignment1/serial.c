@@ -43,7 +43,7 @@ int main()
 		// Calculate absolute relative true error
 		arte = fabs((true_value - sum) / true_value);
 
-		printf("%d %f %5.15f\n", n, sum, arte);
+		printf("%d %f %5.19f\n", n, sum, arte);
 
 		n = n * 2;
 
@@ -78,14 +78,23 @@ double integratef(int a, int b, unsigned int n)
 	sum = 0;
 
 	// Add the areas of all the trapezoids
-	for (double i = 0; i <= n; i++)
-	{
-		x = a + i * h;
-		sum = sum + f(x); 
-	}
+	// for (double i = 0; i <= n; i++)
+	// {
+	// 	x = a + i * h;
+	// 	sum = sum + f(x); 
+	// }
 
 	// The first and last terms need to be halved
-	sum = h * (sum - (f(a) / 2) - (f(b) / 2));
+	// sum = h * (sum - (f(a) / 2) - (f(b) / 2));
+
+	// Textbook way...
+	sum = (f(a) + f(b)) / 2.0;
+	for (unsigned int i = 1; i <= n-1; i++)
+	{
+		x = a + i * h;
+		sum += f(x); 
+	}
+	sum = h * sum;
 
 	return sum;
 }
