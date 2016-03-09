@@ -18,13 +18,13 @@
 #include <math.h>
 
 double f(double x);
-double integratef(int a, int b, unsigned int n);
+double integratef(double a, double b, double n);
 
 int main()
 {
 	double a = 100;	//	Lower Limit
 	double b = 600;	//	Upper Limit
-	unsigned int n = 1;	//	Total Trapezoids (to be calculated)
+	double n = 1;	//	Total Trapezoids (to be calculated)
 	double sum;
 	double max_arte = 0.5 * pow(10,-14);	//	Maximum Absolute Relative True Error
 	double arte;	//	Calculated for every n
@@ -36,24 +36,28 @@ int main()
 	printf("Max. Absolute Relative True Error = %.15f\n", max_arte);
 
 	// Finding Error for different values of n
+	n = -560000 + 1;
 	do
 	{
+		// n = n * 2;
+		n += 560000;
+		if (n == 560001)
+			n -= 1;
+
 		sum = integratef(a, b, n);
 
 		// Calculate absolute relative true error
 		arte = fabs((true_value - sum) / true_value);
 
-		printf("%d %f %5.19f\n", n, sum, arte);
-
-		n = n * 2;
+		printf("%f %f %5.19f\n", n, sum, arte);		
 
 		// Loop ends when absolute true error is in range
 	} while (arte > max_arte);
 
+	printf("%f %f %5.19f\n", n, sum, arte);
 
 	// Print results
-
-	printf("Number of Trapezoids n = %d\n", n);
+	printf("Number of Trapezoids n = %f\n", n);
 	printf("True Value = %.19e\n", true_value);
 	printf("Approximate Value = %.19e\n", sum);
 	printf("True Error = %.19e\n", (true_value - sum));
@@ -69,7 +73,7 @@ double f(double x)
 	return (cos(x/3) - 2*cos(x/5) + 5*sin(x/4) + 8); 
 }
 
-double integratef(int a, int b, unsigned int n)
+double integratef(double a, double b, double n)
 {
 	double h, x, sum;
 
@@ -89,7 +93,7 @@ double integratef(int a, int b, unsigned int n)
 
 	// Textbook way...
 	sum = (f(a) + f(b)) / 2.0;
-	for (unsigned int i = 1; i <= n-1; i++)
+	for (double i = 1; i <= n-1; i++)
 	{
 		x = a + i * h;
 		sum += f(x); 
