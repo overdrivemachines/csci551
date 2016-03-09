@@ -10,12 +10,11 @@ int main(void)
 {
 	int comm_sz; /* Number of processes    */
 	int my_rank; /* My process rank        */
-	double a = 100;	//	Lower Limit - will change with user input
-	double b = 600;	//	Upper Limit - will change with user input
-	double n = 33554432;	//	Total Trapezoids - will change with user input
-	int iparams[3]; // Params for Integration: a, b and n
+	double a, b, n;
+	double integrationParams[3];	// Holds Lower Bound, Upper Bound and Number of Trapezoids
 	double h;	//	Width of each trapezoid
 	double sum;	//	Global sum of all trapezoid areas
+	double start_time, finish_time;
 	
 	/* Start up MPI */
 	MPI_Init(NULL, NULL); 
@@ -29,17 +28,27 @@ int main(void)
 	if (my_rank == 0)
 	{
 		printf("Enter a, b and n\n");
-		scanf("%lf %lf %lf", &a, &b, &n);
-		iparams[0] = a;
-		iparams[1] = b;
-		iparams[2] = n;
+		scanf("%lf %lf %lf", &integrationParams[0], &integrationParams[1], &integrationParams[2]);
+		printf("Running on %d cores.\n", comm_sz);
 	}
 
-	MPI_Bcast(iparams, 3, MPI_INT, 0, MPI_COMM_WORLD);
-	// printf("%d: %f %f %f\n", my_rank, iparams[0], iparams[1], iparams[2]);
+	MPI_Barrier(MPI_COMM_WORLD);
+	if (my_rank == 0)
+	{
+		// Record the Start Time
+		start_time = MPI_Wtime();
+	}
+
+	// Sending a, b and n to all the processes
+	MPI_Bcast(integrationParams, 3, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	a = integrationParams[0];
+	b = integrationParams[1];
+	n = integrationParams[2];
+
+	// printf("%d: %f %f %f\n", my_rank, integrationParams[0], integrationParams[1], integrationParams[2]);
 
 	// Calculate width of each trapezoid
-	h = (b - a) / n;
+	h = (b - a) / (double) n;
 
 	double local_a, local_b, local_n, local_sum;
 
@@ -47,7 +56,9 @@ int main(void)
 	local_a = a + my_rank*local_n; // Left boundary for each process
 	local_b = local_a + local_n*h;	// Right boundary for each process
 
-	printf("Process %d: %f - %f\n", my_rank, local_a, local_b);
+	// printf("Process %d:\n", my_rank);
+	// printf("Width of Each Trapezoid = %f\n", h);
+	printf("Process %d: %f: %f - %f\n", my_rank, local_n, local_a, local_b);
 
 	local_sum = 0;
 
@@ -56,6 +67,10 @@ int main(void)
 
 	if (my_rank == 0)
 	{
+		// Record the Finish Time
+		finish_time = MPI_Wtime();
+
+		printf("Elapsed time = %.6e\n", finish_time - start_time);
 		printf("Total Sum = %f\n", sum);
 	}
 
