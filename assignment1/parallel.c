@@ -67,7 +67,7 @@ int main(void)
 	if (my_rank == 0)
 	{
 		double max_arte = 0.5 * pow(10,-14);	//	Maximum Absolute Relative True Error
-		
+
 		// Calculate Absolute Relative True Error
 		double arte = fabs((true_value - sum) / true_value);
 		
@@ -78,8 +78,13 @@ int main(void)
 		printf("With n = %.0f trapezoids, our estimate\n", n);
 		printf("of the integral from %f to %f = %.13e\n", a, b, sum);
 		printf("true value = %.19e\n", true_value);
-		printf("absolute relative true error = %.19e\n", );
-		printf("Total Sum = %f\n", sum);
+		printf("absolute relative true error = %.19e\n", arte);
+		if (arte < max_arte)
+			printf(" is less than criteria = %.19e\n", max_arte);
+		else if (arte == max_arte)
+			printf(" is equal to the criteria = %.19e\n", max_arte);
+		else
+			printf(" is NOT less than criteria = %.19e\n", max_arte);
 	}
 
 	
