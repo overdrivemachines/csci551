@@ -4,7 +4,7 @@
 #include <mpi.h>     /* For MPI functions, etc */
 
 double f(double x);
-double integrate(double a, double b, double n);
+double integratef(double a, double b, double n);
 
 int main(void)
 {
@@ -45,22 +45,20 @@ int main(void)
 	b = integrationParams[1];
 	n = integrationParams[2];
 
-	// printf("%d: %f %f %f\n", my_rank, integrationParams[0], integrationParams[1], integrationParams[2]);
+	// printf("%d: %f %f %f\n", my_rank, a, b, n);
 
 	// Calculate width of each trapezoid
 	h = (b - a) / (double) n;
 
 	double local_a, local_b, local_n, local_sum;
 
-	local_n = h / comm_sz;	// Number of trapezoids for each process
-	local_a = a + my_rank*local_n; // Left boundary for each process
+	local_n = n / comm_sz;	// Number of trapezoids for each process
+	local_a = a + my_rank*local_n*h; // Left boundary for each process
 	local_b = local_a + local_n*h;	// Right boundary for each process
 
-	// printf("Process %d:\n", my_rank);
-	// printf("Width of Each Trapezoid = %f\n", h);
-	printf("Process %d: %f: %f - %f\n", my_rank, local_n, local_a, local_b);
+	// printf("Process %d: local_n = %f: boundary = %f - %f\n", my_rank, local_n, local_a, local_b);
 
-	local_sum = 0;
+	local_sum = integratef(local_a, local_b, local_n);
 
 
 	MPI_Reduce(&local_sum, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -106,7 +104,7 @@ double integratef(double a, double b, double n)
 
 	// Textbook way...
 	sum = (f(a) + f(b)) / 2.0;
-	for (unsigned int i = 1; i <= n-1; i++)
+	for (double i = 1; i <= n-1; i++)
 	{
 		x = a + i * h;
 		sum += f(x); 
