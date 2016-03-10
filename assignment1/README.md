@@ -10,6 +10,14 @@ I used the Trapezoidal Rule to approximate the area between the graph of the fun
 6.8148708997564173782e-16
 
 ## Tables of Timings from all runs
+Timings for parallel code as a single process. a = 100, b = 600, n = 3920000
+| 4.764011e-01 |
+|--------------|
+| 4.770048e-01 |
+| 4.655771e-01 |
+| 4.971199e-01 |
+| 5.249851e-01 |
+
 ## Table of Minimum Timings and Calculated Speedup and Efficiency
 ## A graph of Speedup
 ## A graph of Efficiency
