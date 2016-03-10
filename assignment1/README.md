@@ -45,6 +45,7 @@ For a fixed problem size, Speedup increases as the number of processes increase 
 ## Experiments in Scaled Speedup, Results, Conclusions 
 
 Scaled Speedup Table using 20 processes. a = 100, b = 600.
+
 |  Task Size | Time (ms) |||||
 |---:|---|---|---|---|---|
 |     10,000 | 2.058029e-03 | **1.780033e-03** | 1.857996e-03 | 1.970053e-03 | 1.799107e-03 |
