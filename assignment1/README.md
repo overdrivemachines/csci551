@@ -43,3 +43,23 @@ Timings for parallel code. a = 100, b = 600, n = 3920000.
 For a fixed problem size, Speedup increases as the number of processes increase and seems like it would plateau. On the other hand, Efficiency decreases as the number of processes increase and it then seems to hold steady.
 
 ## Experiments in Scaled Speedup, Results, Conclusions 
+
+Scaled Speedup Table using 20 processes. a = 100, b = 600.
+|  Task Size | Time (ms) |||||
+|---:|---|---|---|---|---|
+|     10,000 | 2.058029e-03 | **1.780033e-03** | 1.857996e-03 | 1.970053e-03 | 1.799107e-03 |
+|  1,000,000 | 9.440899e-03 | **8.408070e-03** | 8.939981e-03 | 8.759975e-03 | 9.773970e-03 |
+| 10,000,000 | 7.965493e-02 | 7.963109e-02 | 8.531904e-02 | 8.485007e-02 | **7.739592e-02** |
+| 30,000,000 | **2.200050e-01** | 2.228291e-01 | 2.157710e-01 | 2.288949e-01 | 2.266889e-01 |
+| 80,000,000 | 5.956919e-01 | 5.681348e-01 | 6.266172e-01 | **5.355589e-01** | 5.937741e-01 |
+| 200,000,000 | **1.314811e+00** | 1.317947e+00 | 1.389248e+00 | 1.346352e+00 | 1.456730e+00 |
+
+
+|   Task Size | Time (ms)    | Speedup    |
+|---:|---|---|
+|      10,000 | 1.780033e-03 |      *n/a* |
+|   1,000,000 | 8.408070e-03 |   4.723547 |
+|  10,000,000 | 7.739592e-02 |  43.480048 |
+|  30,000,000 | 2.200050e-01 | 123.596023 |
+|  80,000,000 | 5.355589e-01 | 300.870209 |
+| 200,000,000 | 1.314811e+00 | 738.644171 |
