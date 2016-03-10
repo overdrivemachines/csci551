@@ -13,7 +13,7 @@ I used the Trapezoidal Rule to approximate the area between the graph of the fun
 Timings for parallel code. a = 100, b = 600, n = 3920000.
 
 | \# Processes | Time (ms) |||||
-|---|---|
+|---|---|---|---|---|---|
 | 1 process | 4.764011e-01 | 4.770048e-01 | **4.655771e-01** | 4.971199e-01 | 5.249851e-01 |
 | 2 processes | **2.511709e-01** | 2.512050e-01 | 2.511780e-01 | 2.795460e-01 | 2.512329e-01 |
 | 8 processes | 7.840300e-02 | 7.854414e-02 | 7.836819e-02 | 7.712007e-02 | **7.627106e-02** |
