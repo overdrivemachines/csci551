@@ -21,9 +21,23 @@ Timings for parallel code. a = 100, b = 600, n = 3920000.
 | 20 processes | 3.651309e-02 | 3.339100e-02 | **3.145099e-02** | 3.252006e-02 | 3.380013e-02 |
 
 
-
 ## Table of Minimum Timings and Calculated Speedup and Efficiency
+
+| \# Processes (p) | Min Time (in ms) | Speedup SU(p) = T<sub>1</sub>/T<sub>p</sub> | Efficiency ef(p) = SU(p)/p |
+|---|---|---|---|
+| 1 process    | 4.655771e-01 | *n/a*     | *n/a* |
+| 2 processes  | 2.511709e-01 |  1.853627 | 0.926813 |
+| 8 processes  | 7.627106e-02 |  6.104243 | 0.763030 |
+| 14 processes | 4.330182e-02 | 10.751906 | 0.767993 |
+| 20 processes | 3.145099e-02 | 14.803257 | 0.740163 |
+
+
 ## A graph of Speedup
+![](http://s18.postimg.org/wxzj5w4tl/speedup.png)
+
 ## A graph of Efficiency
+![](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMcjBETzVCclc3eEU)
+
+
 ## Conclusions
 ## Experiments in Scaled Speedup, Results, Conclusions 
