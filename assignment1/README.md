@@ -33,11 +33,13 @@ Timings for parallel code. a = 100, b = 600, n = 3920000.
 
 
 ## A graph of Speedup
-![](http://s18.postimg.org/wxzj5w4tl/speedup.png)
+![](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMSFZ1SFdYc1A2WU0)
 
 ## A graph of Efficiency
 ![](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMcjBETzVCclc3eEU)
 
 
 ## Conclusions
+For a fixed problem size, Speedup increases as the number of processes increase and seems like it would plateau. On the other hand, Efficiency decreases as the number of processes increase and it then seems to hold steady.
+
 ## Experiments in Scaled Speedup, Results, Conclusions 
