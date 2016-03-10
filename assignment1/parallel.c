@@ -14,6 +14,7 @@ int main(void)
 	double integrationParams[3];	// Holds Lower Bound, Upper Bound and Number of Trapezoids
 	double h;	//	Width of each trapezoid
 	double sum;	//	Global sum of all trapezoid areas
+	double true_value = 4003.7209001513268265;	//	True value of integral (using 20 digits)
 	double start_time, finish_time;
 	
 	/* Start up MPI */
@@ -29,7 +30,7 @@ int main(void)
 	{
 		printf("Enter a, b and n\n");
 		scanf("%lf %lf %lf", &integrationParams[0], &integrationParams[1], &integrationParams[2]);
-		printf("Running on %d cores.\n", comm_sz);
+		printf("\nRunning on %d cores.\n", comm_sz);
 	}
 
 	MPI_Barrier(MPI_COMM_WORLD);
@@ -65,10 +66,19 @@ int main(void)
 
 	if (my_rank == 0)
 	{
+		double max_arte = 0.5 * pow(10,-14);	//	Maximum Absolute Relative True Error
+		
+		// Calculate Absolute Relative True Error
+		double arte = fabs((true_value - sum) / true_value);
+		
 		// Record the Finish Time
 		finish_time = MPI_Wtime();
 
 		printf("Elapsed time = %.6e\n", finish_time - start_time);
+		printf("With n = %.0f trapezoids, our estimate\n", n);
+		printf("of the integral from %f to %f = %.13e\n", a, b, sum);
+		printf("true value = %.19e\n", true_value);
+		printf("absolute relative true error = %.19e\n", );
 		printf("Total Sum = %f\n", sum);
 	}
 
