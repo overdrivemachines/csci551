@@ -10,8 +10,8 @@ int main(void)
 {
 	int comm_sz; /* Number of processes    */
 	int my_rank; /* My process rank        */
-	double a, b, n;
-	double integrationParams[3];	// Holds Lower Bound, Upper Bound and Number of Trapezoids
+	double a, b, n;	// Holds Lower Bound, Upper Bound and Number of Trapezoids
+	double integrationParams[3];	// Holds Lower Bound, Upper Bound and Number of Trapezoids that can be sent in MPI_Bcast
 	double h;	//	Width of each trapezoid
 	double sum;	//	Global sum of all trapezoid areas
 	double true_value = 4003.7209001513268265;	//	True value of integral (using 20 digits)
@@ -33,6 +33,7 @@ int main(void)
 		printf("\nRunning on %d cores.\n", comm_sz);
 	}
 
+	// Synchronization
 	MPI_Barrier(MPI_COMM_WORLD);
 	if (my_rank == 0)
 	{
@@ -40,28 +41,27 @@ int main(void)
 		start_time = MPI_Wtime();
 	}
 
-	// Sending a, b and n to all the processes
+	// Sending a, b and n to all the processes (from Process 0)
 	MPI_Bcast(integrationParams, 3, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	a = integrationParams[0];
 	b = integrationParams[1];
 	n = integrationParams[2];
-
-	// printf("%d: %f %f %f\n", my_rank, a, b, n);
 
 	// Calculate width of each trapezoid
 	h = (b - a) / (double) n;
 
 	double local_a, local_b, local_n, local_sum;
 
-	local_n = n / comm_sz;	// Number of trapezoids for each process
-	local_a = a + my_rank*local_n*h; // Left boundary for each process
-	local_b = local_a + local_n*h;	// Right boundary for each process
+	local_n = n / comm_sz;				// Number of trapezoids for each process
+	local_a = a + my_rank*local_n*h; 	// Left boundary for each process
+	local_b = local_a + local_n*h;		// Right boundary for each process
 
 	// printf("Process %d: local_n = %f: boundary = %f - %f\n", my_rank, local_n, local_a, local_b);
 
+	// Calculate the area
 	local_sum = integratef(local_a, local_b, local_n);
 
-
+	// Add all the sums and send to Process 0
 	MPI_Reduce(&local_sum, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	if (my_rank == 0)
@@ -74,6 +74,7 @@ int main(void)
 		// Record the Finish Time
 		finish_time = MPI_Wtime();
 
+		// Print results
 		printf("Elapsed time = %.6e\n", finish_time - start_time);
 		printf("With n = %.0f trapezoids, our estimate\n", n);
 		printf("of the integral from %f to %f = %.13e\n", a, b, sum);
