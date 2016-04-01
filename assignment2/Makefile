@@ -10,3 +10,6 @@ CFLAGS = -g -Wall -Wextra -std=c99
 
 matrixmult: matrixmult.c
 	$(MC) $(CFLAGS) -o matrixmult matrixmult.c
+
+clean:
+	rm -f ./matrixmult *.o *~
