@@ -11,6 +11,8 @@
 #include <stdlib.h>  // rand(), srand()
 #include <time.h>    // time()
 
+void printMatrix(int *m, int matrixSize);
+
 int main(void)
 {
  	int comm_sz;	//	Total number of processes
@@ -74,16 +76,16 @@ int main(void)
 		start_time = MPI_Wtime();
 
 		// Populate the matrices if R flag is selected by user
-		if (flag == 'R')
+		if (flag != 'I')
 		{
 			srand(time(NULL));
 			for (i = 0; i < matrixSize * matrixSize; i++)
 			{
-				rand();
 				a[i] = rand() % 100;
 				b[i] = rand() % 100;
 			}
 		}
+
 	}
 
 	// Perform Calculation here..
@@ -98,27 +100,11 @@ int main(void)
 		printf("running on %d processors\n", comm_sz);
 		printf("elapsed time = %.6e seconds\n", finish_time - start_time);
 		printf("A:\n");
-		for (i = 0; i < matrixSize; i++)
-		{
-			for (j = 0; j < matrixSize; j++)
-				printf("%d ", a[i*matrixSize + j]);
-			printf("\n");
-		}
+		printMatrix(a, matrixSize);
 		printf("B:\n");
-		for (i = 0; i < matrixSize; i++)
-		{
-			for (j = 0; j < matrixSize; j++)
-				printf("%d ", b[i*matrixSize + j]);
-			printf("\n");
-		}
+		printMatrix(b, matrixSize);
 		printf("C:\n");
-		for (i = 0; i < matrixSize; i++)
-		{
-			for (j = 0; j < matrixSize; j++)
-				printf("%d ", c[i*matrixSize + j]);
-			printf("\n");
-		}
-
+		printMatrix(c, matrixSize);
 
 		free(a);
 		free(b);
@@ -128,4 +114,19 @@ int main(void)
  	/* Shut down MPI */
 	MPI_Finalize();
  	return 0;
+}
+
+/**
+ * Prints the contents of a Matrix
+ * @param int* m 			The matrix that will be printed
+ * @param int matrixSize	Size of the matrix
+ */
+void printMatrix(int *m, int matrixSize)
+{
+	for (int i = 0; i < matrixSize; i++)
+	{
+		for (int j = 0; j < matrixSize; j++)
+			printf("%d ", m[i*matrixSize + j]);
+		printf("\n");
+	}
 }
