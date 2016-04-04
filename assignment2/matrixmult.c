@@ -21,7 +21,7 @@ int main(void)
  	int *a;			//	n x n Matrix as a 1D array
  	int *b;			//	n x n Matrix as a 1D array
  	int *c;			//	n x n Matrix as a 1D array (this is where we store the result)
- 	int i, j;		//	Counters used in for loops
+ 	int i, j, k;	//	Counters used in for loops
  	double start_time, finish_time;
 
 
@@ -64,7 +64,17 @@ int main(void)
 			for (i = 0; i < matrixSize * matrixSize; i++)
 					scanf("%d", &b[i]);
 		}
-		else
+	}
+
+	// Synchronization
+	MPI_Barrier(MPI_COMM_WORLD);
+	if (my_rank == 0)
+	{
+		// Record the Start Time
+		start_time = MPI_Wtime();
+
+		// Populate the matrices if R flag is selected by user
+		if (flag == 'R')
 		{
 			srand(time(NULL));
 			for (i = 0; i < matrixSize * matrixSize; i++)
@@ -74,14 +84,6 @@ int main(void)
 				b[i] = rand() % 100;
 			}
 		}
-	}
-
-	// Synchronization
-	MPI_Barrier(MPI_COMM_WORLD);
-	if (my_rank == 0)
-	{
-		// Record the Start Time
-		start_time = MPI_Wtime();
 	}
 
 	// Perform Calculation here..
@@ -109,9 +111,18 @@ int main(void)
 				printf("%d ", b[i*matrixSize + j]);
 			printf("\n");
 		}
+		printf("C:\n");
+		for (i = 0; i < matrixSize; i++)
+		{
+			for (j = 0; j < matrixSize; j++)
+				printf("%d ", c[i*matrixSize + j]);
+			printf("\n");
+		}
+
 
 		free(a);
 		free(b);
+		free(c);
 	}	
  	
  	/* Shut down MPI */
