@@ -1,9 +1,31 @@
 /**
  * File: matrixmult.c
- * This program performs multiplication of 2 matrices of integers
- * using MPI.
+ * Purpose: This program performs multiplication of 2 matrices of integers
+ * 			using MPI.
+ * Input: 	<form> 	- ijk | ikj | kij
+ * 			<flag> 	- R - Random generation | I - Input matrices
+ * 			<n>		- Matrix size n x n
+ * 			<A>		- n x n Matrix in row major order
+ * 			<B>		- n x n Matrix in row major order
+ * Output: 	Time taken to do the matrix multiplication.
+ * 			Product of the matrices (AB) *
+ * Author:	Dipen Chauhan
+ * URL:		http://www.ecst.csuchico.edu/~judyc/1516S-csci551/assignments/03-matrixmultiplcation.html
  *
- * Author: Dipen Chauhan
+ * MPI Basics: http://www.ecst.csuchico.edu/~judyc/1516S-csci551/notes/07-mpi-basics.html
+ * MPI Comm: http://www.ecst.csuchico.edu/~judyc/1516S-csci551/notes/09-mpi-integration.html
+ * MPI Comm: http://www.ecst.csuchico.edu/~judyc/1516S-csci551/notes/11-mpi-communication.html
+ * MPI Scatter: http://mpitutorial.com/tutorials/mpi-scatter-gather-and-allgather/
+ * Matrix Mult: http://www.ecst.csuchico.edu/~judyc/1516S-csci551/notes/13-blas.html
+ * https://computing.llnl.gov/tutorials/mpi/samples/C/mpi_mm.c
+ * http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication_17.html
+ * https://www.cs.rochester.edu/~scott/458/notes/06-MPI.pdf
+ *
+ * Sample Runs:
+ * $ echo "ijk R 3" | ./matrixmult
+ * $ echo "ijk R 3" | mpirun -n 3 ./matrixmult
+ *
+ * 
  */
 
 #include <stdio.h>
@@ -15,19 +37,18 @@ void printMatrix(int *m, int matrixSize);
 
 int main(void)
 {
- 	int comm_sz;	//	Total number of processes
- 	int my_rank;	//	Rank of process
- 	char form[4];	//	ijk | ikj | kij
- 	char flag;		//	R - Random Generation | I - Input
- 	int matrixSize;
- 	int *a;			//	n x n Matrix as a 1D array
- 	int *b;			//	n x n Matrix as a 1D array
- 	int *c;			//	n x n Matrix as a 1D array (this is where we store the result)
- 	int i, j, k;	//	Counters used in for loops
- 	double start_time, finish_time;
+	int comm_sz;	//	Total number of processes
+	int my_rank;	//	Rank of process
+	char form[4];	//	ijk | ikj | kij
+	char flag;		//	R - Random Generation | I - Input
+	int matrixSize;
+	int *a;			//	n x n Matrix as a 1D array
+	int *b;			//	n x n Matrix as a 1D array
+	int *c;			//	n x n Matrix as a 1D array (this is where we store the result)
+	int i, j, k;	//	Counters used in for loops
+	double start_time, finish_time;
 
-
- 	/* Start up MPI */
+	/* Start up MPI */
 	MPI_Init(NULL, NULL); 
 
 	/* Get the number of processes */
@@ -66,17 +87,7 @@ int main(void)
 			for (i = 0; i < matrixSize * matrixSize; i++)
 					scanf("%d", &b[i]);
 		}
-	}
-
-	// Synchronization
-	MPI_Barrier(MPI_COMM_WORLD);
-	if (my_rank == 0)
-	{
-		// Record the Start Time
-		start_time = MPI_Wtime();
-
-		// Populate the matrices if R flag is selected by user
-		if (flag != 'I')
+		else // Populate the matrices if R flag is selected by user
 		{
 			srand(time(NULL));
 			for (i = 0; i < matrixSize * matrixSize; i++)
@@ -85,10 +96,56 @@ int main(void)
 				b[i] = rand() % 100;
 			}
 		}
-
 	}
 
-	// Perform Calculation here..
+	// Synchronization
+	MPI_Barrier(MPI_COMM_WORLD);
+	if (my_rank == 0)
+	{
+		// Record the Start Time
+		start_time = MPI_Wtime();
+	}
+
+	// Broadcast matrixSize from process 0 to all processes
+	MPI_Bcast(&matrixSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	if (my_rank != 0)
+	{
+		b = (int *) malloc(sizeof(int) * matrixSize * matrixSize);
+		c = (int *) malloc(sizeof(int) * matrixSize * matrixSize);
+	}
+
+	// Broadcast array 'b' from process 0 to all processes
+	MPI_Bcast(b, matrixSize * matrixSize, MPI_INT, 0, MPI_COMM_WORLD);
+
+	int elementsPerProc = matrixSize * matrixSize / comm_sz;
+	int *local_a = (int *) malloc(sizeof(int) * elementsPerProc);
+	int *local_c = (int *) malloc(sizeof(int) * elementsPerProc);
+	
+	// Send chunks of array 'a' from process 0 to all processes and store them in local_a
+	MPI_Scatter(a, elementsPerProc, MPI_INT, local_a, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
+	
+
+	printf("%d:local_a[0]=%d local_a[1]=%d local_a[2]=%d\n", my_rank, local_a[0], local_a[1], local_a[2]);
+	exit(0);
+
+
+
+	for (i = 0; i < matrixSize / comm_sz; i++)
+	{
+		for (j = 0; j < matrixSize; j++)
+		{
+
+			local_c[i * matrixSize + j] = 0;
+			for (k = 0; k < matrixSize; k++)
+			{
+				local_c[i * matrixSize + j] += local_a[i * matrixSize + k] * b[k * matrixSize + j];
+			}
+			printf("%d:local_c[%d]=%d ", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
+		}
+	}
+
+	MPI_Gather(local_c, elementsPerProc, MPI_INT, c, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
 
 
 	// Display output
