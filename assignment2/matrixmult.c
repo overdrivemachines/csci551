@@ -24,7 +24,11 @@
  * Sample Runs:
  * $ echo "ijk R 3" | ./matrixmult
  * $ echo "ijk R 3" | mpirun -n 3 ./matrixmult
- *
+ * $ echo "ijk I 3 1 2 3 4 5 6 7 8 9 4 0 8 7 1 1 0 4 9" | mpirun -n 3 ./matrixmult
+ * Output:
+ * 18 14 37
+ * 51 29 91
+ * 84 44 145
  * 
  */
 
@@ -125,11 +129,7 @@ int main(void)
 	// Send chunks of array 'a' from process 0 to all processes and store them in local_a
 	MPI_Scatter(a, elementsPerProc, MPI_INT, local_a, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
 	
-
-	printf("%d:local_a[0]=%d local_a[1]=%d local_a[2]=%d\n", my_rank, local_a[0], local_a[1], local_a[2]);
-	exit(0);
-
-
+	// printf("%d:local_a[0]=%d local_a[1]=%d local_a[2]=%d\n", my_rank, local_a[0], local_a[1], local_a[2]);
 
 	for (i = 0; i < matrixSize / comm_sz; i++)
 	{
@@ -141,12 +141,11 @@ int main(void)
 			{
 				local_c[i * matrixSize + j] += local_a[i * matrixSize + k] * b[k * matrixSize + j];
 			}
-			printf("%d:local_c[%d]=%d ", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
+			// printf("%d:local_c[%d]=%d\n", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
 		}
 	}
 
 	MPI_Gather(local_c, elementsPerProc, MPI_INT, c, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
-
 
 	// Display output
 	if (my_rank == 0)
