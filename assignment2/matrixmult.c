@@ -20,6 +20,7 @@
  * https://computing.llnl.gov/tutorials/mpi/samples/C/mpi_mm.c
  * http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication_17.html
  * https://www.cs.rochester.edu/~scott/458/notes/06-MPI.pdf
+ * http://www.mpich.org/static/docs/v3.1/www3/MPI_Scatterv.html
  *
  * Sample Runs:
  * $ echo "ijk R 3" | ./matrixmult
@@ -123,6 +124,8 @@ int main(void)
 
 	// Number of elements of array 'a' each process will have
 	int *elementsPerProc = (int *) malloc(sizeof(int) * comm_sz);
+	int *displacements = (int *) malloc(sizeof(int) * comm_sz);
+
 	for (i = 0; i < comm_sz; i++)
 	{
 		// Find number of rows
@@ -136,24 +139,33 @@ int main(void)
 		// Assigning the unassignmed rows to processors
 		for (i = 0; i < unassignedRows; i++)
 			elementsPerProc[i] += matrixSize;
+
 	}
 
-	if (my_rank == 0)
-	{
-		for (i = 0; i < comm_sz; i++)
-			printf("%d:%d \n", i, elementsPerProc[i]);
-	}
+	// Calculate displacements (will be used in MPI_Scatterv)
+	displacements[0] = 0;
+	for (i = 1; i < comm_sz; i++)
+		displacements[i] = displacements[i - 1] + elementsPerProc[i - 1]; 
 
-	exit(0);
+	// Printing the displacements...
+	// if (my_rank == 0)
+	// {
+	// 	for (i = 0; i < comm_sz; i++)
+	// 		printf("%d:%d ", i, displacements[i]);
+	// 	printf("\n");
+	// }
 	
 	// int elementsPerProc = matrixSize * matrixSize / comm_sz;
-	// int *local_a = (int *) malloc(sizeof(int) * elementsPerProc);
-	// int *local_c = (int *) malloc(sizeof(int) * elementsPerProc);
+	int *local_a = (int *) malloc(sizeof(int) * elementsPerProc[my_rank]);
+	int *local_c = (int *) malloc(sizeof(int) * elementsPerProc[my_rank]);
 	
 	// Send chunks of array 'a' from process 0 to all processes and store them in local_a
 	// MPI_Scatter(a, elementsPerProc, MPI_INT, local_a, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
-	
-	// printf("%d:local_a[0]=%d local_a[1]=%d local_a[2]=%d\n", my_rank, local_a[0], local_a[1], local_a[2]);
+	MPI_Scatterv(a, elementsPerProc, displacements, MPI_INT, local_a, matrixSize * matrixSize , MPI_INT, 0, MPI_COMM_WORLD);
+
+	// Print elements each process is receiving...
+	// for (i = 0; i < elementsPerProc[my_rank]; i++)
+	// 	printf("%d:local_a[%d]=%d\n", my_rank, i, local_a[i]);
 
 	// for (i = 0; i < matrixSize / comm_sz; i++)
 	// {
@@ -189,7 +201,7 @@ int main(void)
 		free(a);
 		free(b);
 		free(c);
-	}	
+	}
  	
  	/* Shut down MPI */
 	MPI_Finalize();
