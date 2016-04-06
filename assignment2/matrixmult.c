@@ -61,10 +61,9 @@ int main(void)
 	/* Get my rank among all the processes */
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
+	// Process 0 reads from standard input
 	if (my_rank == 0)
-	{
-		// Read from standard input
-		
+	{		
 		// Input form: ijk | ikj | kij 
 		scanf("%s", form);
 
@@ -122,30 +121,55 @@ int main(void)
 	// Broadcast array 'b' from process 0 to all processes
 	MPI_Bcast(b, matrixSize * matrixSize, MPI_INT, 0, MPI_COMM_WORLD);
 
-	int elementsPerProc = matrixSize * matrixSize / comm_sz;
-	int *local_a = (int *) malloc(sizeof(int) * elementsPerProc);
-	int *local_c = (int *) malloc(sizeof(int) * elementsPerProc);
+	// Number of elements of array 'a' each process will have
+	int *elementsPerProc = (int *) malloc(sizeof(int) * comm_sz);
+	for (i = 0; i < comm_sz; i++)
+	{
+		// Find number of rows
+		elementsPerProc[i] = matrixSize / comm_sz;
+		// Number of elements = number of rows * elements per row
+		elementsPerProc[i] = elementsPerProc[i] * matrixSize;
+	}
+	int unassignedRows = matrixSize % comm_sz;
+	if (unassignedRows != 0)
+	{
+		// Assigning the unassignmed rows to processors
+		for (i = 0; i < unassignedRows; i++)
+			elementsPerProc[i] += matrixSize;
+	}
+
+	if (my_rank == 0)
+	{
+		for (i = 0; i < comm_sz; i++)
+			printf("%d:%d \n", i, elementsPerProc[i]);
+	}
+
+	exit(0);
+	
+	// int elementsPerProc = matrixSize * matrixSize / comm_sz;
+	// int *local_a = (int *) malloc(sizeof(int) * elementsPerProc);
+	// int *local_c = (int *) malloc(sizeof(int) * elementsPerProc);
 	
 	// Send chunks of array 'a' from process 0 to all processes and store them in local_a
-	MPI_Scatter(a, elementsPerProc, MPI_INT, local_a, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
+	// MPI_Scatter(a, elementsPerProc, MPI_INT, local_a, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
 	
 	// printf("%d:local_a[0]=%d local_a[1]=%d local_a[2]=%d\n", my_rank, local_a[0], local_a[1], local_a[2]);
 
-	for (i = 0; i < matrixSize / comm_sz; i++)
-	{
-		for (j = 0; j < matrixSize; j++)
-		{
+	// for (i = 0; i < matrixSize / comm_sz; i++)
+	// {
+	// 	for (j = 0; j < matrixSize; j++)
+	// 	{
 
-			local_c[i * matrixSize + j] = 0;
-			for (k = 0; k < matrixSize; k++)
-			{
-				local_c[i * matrixSize + j] += local_a[i * matrixSize + k] * b[k * matrixSize + j];
-			}
-			// printf("%d:local_c[%d]=%d\n", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
-		}
-	}
+	// 		local_c[i * matrixSize + j] = 0;
+	// 		for (k = 0; k < matrixSize; k++)
+	// 		{
+	// 			local_c[i * matrixSize + j] += local_a[i * matrixSize + k] * b[k * matrixSize + j];
+	// 		}
+	// 		// printf("%d:local_c[%d]=%d\n", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
+	// 	}
+	// }
 
-	MPI_Gather(local_c, elementsPerProc, MPI_INT, c, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
+	// MPI_Gather(local_c, elementsPerProc, MPI_INT, c, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
 
 	// Display output
 	if (my_rank == 0)
