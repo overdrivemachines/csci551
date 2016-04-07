@@ -13,6 +13,7 @@ Rows in Array A were divided and sent to different processes. Rows are contigiou
 ### Timings
 
 Timings for n = 4800. Minimum times are shown in bold.
+
 | \# Cores | Time (ms) |||||
 |---|---|---|---|---|---|
 | 1 | 6.482730e+02 | **6.301806e+02** | 6.356979e+02 | 6.456381e+02 | 7.743673e+02 |
@@ -23,7 +24,9 @@ Timings for n = 4800. Minimum times are shown in bold.
 | 20 | 1.255137e+02 | **6.140914e+01** | 1.166914e+02 | 6.164995e+01 | 6.147898e+01 |
 
 ### Speedup and Efficiency
+
 Table of Speedup and Efficiecy calculated from the minimums
+
 | \# Cores | Time (s) | Speedup | Efficiency |
 |---|---|---|---|
 | 1 | 6.301806e+02 | 1.000000E+00 | 1.000000E+00 |
@@ -34,6 +37,7 @@ Table of Speedup and Efficiecy calculated from the minimums
 | 20 | 6.140914e+01 | 1.026200E+01 | 5.131000E-01 |
 
 Graph of Speedup
+![Speedup ijk](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMWUxCajgtVkNyY0U)
 
 Graph of Efficiency
 
@@ -44,6 +48,7 @@ Graph of Efficiency
 ### Timings
 
 Timings for n = 4800
+
 | \# Cores | Time (s) |||||
 |---|---|---|---|---|---|
 | 1 | 4.683063e+02 | **4.342753e+02** | 4.342853e+02 | 4.532983e+02 | 4.388923e+02 |
@@ -77,6 +82,7 @@ Graph of Efficiency
 ### Timings
 
 Timings for n = 4800
+
 | \# Cores | Time (ms) |||||
 |---|---|---|---|---|---|
 | 1 | 7.099131e+02 | 4.786510e+02 | **4.359557e+02** | 4.944320e+02 | 4.793248e+02 |
