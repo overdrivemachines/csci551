@@ -37,6 +37,7 @@
 #include <mpi.h>
 #include <stdlib.h>  // rand(), srand()
 #include <time.h>    // time()
+#include <string.h>
 
 void printMatrix(int *m, int matrixSize);
 
@@ -113,6 +114,9 @@ int main(void)
 	// Broadcast matrixSize from process 0 to all processes
 	MPI_Bcast(&matrixSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+	// Broadcast form from process 0 to all processes
+	MPI_Bcast(&form, 4, MPI_CHAR, 0, MPI_COMM_WORLD);
+
 	if (my_rank != 0)
 	{
 		b = (int *) malloc(sizeof(int) * matrixSize * matrixSize);
@@ -161,27 +165,69 @@ int main(void)
 	
 	// Send chunks of array 'a' from process 0 to all processes and store them in local_a
 	// MPI_Scatter(a, elementsPerProc, MPI_INT, local_a, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Scatterv(a, elementsPerProc, displacements, MPI_INT, local_a, matrixSize * matrixSize , MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Scatterv(a, elementsPerProc, displacements, MPI_INT, local_a, elementsPerProc[my_rank], MPI_INT, 0, MPI_COMM_WORLD);
 
 	// Print elements each process is receiving...
 	// for (i = 0; i < elementsPerProc[my_rank]; i++)
 	// 	printf("%d:local_a[%d]=%d\n", my_rank, i, local_a[i]);
+	
+	
+	int rows = elementsPerProc[my_rank] / matrixSize;
+	int sum = 0;
 
-	// for (i = 0; i < matrixSize / comm_sz; i++)
-	// {
-	// 	for (j = 0; j < matrixSize; j++)
-	// 	{
+	if (strcmp(form, "ijk") == 0)
+	{
+		for (i = 0; i < rows; i++)
+		{
+			for (j = 0; j < matrixSize; j++)
+			{
+				sum = 0;
+				for (k = 0; k < matrixSize; k++)
+				{
+					sum += local_a[i * matrixSize + k] * b[k * matrixSize + j];
+				}
 
-	// 		local_c[i * matrixSize + j] = 0;
-	// 		for (k = 0; k < matrixSize; k++)
-	// 		{
-	// 			local_c[i * matrixSize + j] += local_a[i * matrixSize + k] * b[k * matrixSize + j];
-	// 		}
-	// 		// printf("%d:local_c[%d]=%d\n", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
-	// 	}
-	// }
+				local_c[i * matrixSize + j] = sum;
+
+				// printf("%d:local_c[%d]=%d\n", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
+			}
+		}
+	}
+	else if (strcmp(form, "ikj") == 0)
+	{
+		for (i = 0; i < rows; i++)
+		{
+			for (k = 0; k < matrixSize; k++)
+			{
+				sum = 0;
+				for (j = 0; j < matrixSize; j++)
+				{
+					sum += local_a[i * matrixSize + k] * b[k * matrixSize + j];
+				}
+				local_c[i * matrixSize + k] = sum; 
+
+			}
+		}
+	}
+	else if (strcmp(form, "kij") == 0)
+	{
+		for (k = 0; k < matrixSize; k++)
+		{
+			for (i = 0; i < rows; i++)
+			{
+				sum = 0;
+				for (j = 0; j < matrixSize; j++)
+				{
+					sum += local_a[i * matrixSize + k] * b[k * matrixSize + j];
+				}
+				local_c[k * matrixSize + i] = sum;  
+				printf("%d:local_c[%d]=%d\n", my_rank, k * matrixSize + i, local_c[k * matrixSize + i]);
+			}
+		}
+	}
 
 	// MPI_Gather(local_c, elementsPerProc, MPI_INT, c, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Gatherv(local_c, elementsPerProc[my_rank], MPI_INT, c, elementsPerProc, displacements, MPI_INT, 0, MPI_COMM_WORLD);
 
 	// Display output
 	if (my_rank == 0)
