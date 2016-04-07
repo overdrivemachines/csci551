@@ -196,26 +196,28 @@ int main(void)
 	}
 	else if (strcmp(form, "ikj") == 0)
 	{
+		int r;
+		// 0 all the elements in array 'c'
+		for (i = 0; i < elementsPerProc[my_rank]; i++)
+			local_c[i] = 0;
 		for (i = 0; i < rows; i++)
 		{
 			for (k = 0; k < matrixSize; k++)
 			{
-				sum = 0;
+				r = local_a[i * matrixSize + k];
 				for (j = 0; j < matrixSize; j++)
 				{
-					sum += local_a[i * matrixSize + k] * b[k * matrixSize + j];
+					local_c[i * matrixSize + j] += r * b[k * matrixSize + j];
 				}
-				local_c[i * matrixSize + k] = sum;
 			}
 		}
 	}
 	else if (strcmp(form, "kij") == 0)
 	{
 		int r;
+		// 0 all the elements in array 'c'
 		for (i = 0; i < elementsPerProc[my_rank]; i++)
 			local_c[i] = 0;
-		
-
 		for (k = 0; k < matrixSize; k++)
 		{
 			for (i = 0; i < rows; i++)
