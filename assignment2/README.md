@@ -37,6 +37,7 @@ Table of Speedup and Efficiecy calculated from the minimums
 | 20 | 6.140914e+01 | 1.026200E+01 | 5.131000E-01 |
 
 Graph of Speedup
+
 ![Speedup ijk](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMWUxCajgtVkNyY0U)
 
 Graph of Efficiency
