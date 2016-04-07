@@ -38,9 +38,11 @@ Table of Speedup and Efficiecy calculated from the minimums
 
 Graph of Speedup
 
-![Speedup ijk](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMWUxCajgtVkNyY0U)
+![Speedup ijk](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMZVhGQWtQRmJiU00)
 
 Graph of Efficiency
+
+![Efficiency ijk](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMWUxCajgtVkNyY0U)
 
 ## Form ikj
 
@@ -71,10 +73,13 @@ Table of Speedup and Efficiency calculated from the minimums
 | 16 | 4.256988E+01 | 1.020147E+01 | 6.375918E-01 | 
 | 20 | 4.343979E+01 | 9.997178E+00 | 4.998589E-01 | 
 
-
-
 Graph of Speedup
+
+![Speedup ikj](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMZ29UY3IxdjcxQTg)
+
 Graph of Efficiency
+
+![Efficiency ikj](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMX1VIV0NrUG83MVE)
 
 ## Form kij
 
@@ -106,6 +111,11 @@ Table of Speedup and Efficiency calculated from the minimums
 | 20 | 4.354816E+01 | 1.001089E+01 | 5.005443E-01 | 
 
 Graph of Speedup
+
+![Speedup kij](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMMFo5TWFQVEY0Mk0)
+
 Graph of Efficiency
+
+![Efficiency kij](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMaG5FZUxEUjE4MFU)
 
 ## Observations, Analysis and Conclusions
