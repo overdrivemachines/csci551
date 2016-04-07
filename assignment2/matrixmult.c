@@ -26,6 +26,7 @@
  * $ echo "ijk R 3" | ./matrixmult
  * $ echo "ijk R 3" | mpirun -n 3 ./matrixmult
  * $ echo "ijk I 3 1 2 3 4 5 6 7 8 9 4 0 8 7 1 1 0 4 9" | mpirun -n 3 ./matrixmult
+ * $ echo "kij I 3 1 2 3 4 5 6 7 8 9 4 0 8 7 1 1 0 4 9" | mpirun -n 2 ./matrixmult
  * Output:
  * 18 14 37
  * 51 29 91
@@ -204,24 +205,27 @@ int main(void)
 				{
 					sum += local_a[i * matrixSize + k] * b[k * matrixSize + j];
 				}
-				local_c[i * matrixSize + k] = sum; 
-
+				local_c[i * matrixSize + k] = sum;
 			}
 		}
 	}
 	else if (strcmp(form, "kij") == 0)
 	{
+		int r;
+		for (i = 0; i < elementsPerProc[my_rank]; i++)
+			local_c[i] = 0;
+		
+
 		for (k = 0; k < matrixSize; k++)
 		{
 			for (i = 0; i < rows; i++)
 			{
-				sum = 0;
+				r = local_a[i * matrixSize + k];
 				for (j = 0; j < matrixSize; j++)
 				{
-					sum += local_a[i * matrixSize + k] * b[k * matrixSize + j];
+					local_c[i * matrixSize + j] += r * b[k * matrixSize + j];
 				}
-				local_c[k * matrixSize + i] = sum;  
-				printf("%d:local_c[%d]=%d\n", my_rank, k * matrixSize + i, local_c[k * matrixSize + i]);
+				// printf("%d:local_c[%d]=%d\n", my_rank, i * matrixSize + j, local_c[i * matrixSize + j]);
 			}
 		}
 	}
@@ -245,7 +249,7 @@ int main(void)
 		printMatrix(c, matrixSize);
 	}
  	
- 	free(a);
+ 	// free(a);
  	free(b);
  	free(c);
  	free(elementsPerProc);
