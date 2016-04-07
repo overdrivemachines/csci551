@@ -243,12 +243,15 @@ int main(void)
 		printMatrix(b, matrixSize);
 		printf("C:\n");
 		printMatrix(c, matrixSize);
-
-		free(a);
-		free(b);
-		free(c);
 	}
  	
+ 	free(a);
+ 	free(b);
+ 	free(c);
+ 	free(elementsPerProc);
+ 	free(displacements);
+ 	free(local_a);
+ 	free(local_c);
  	/* Shut down MPI */
 	MPI_Finalize();
  	return 0;
