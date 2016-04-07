@@ -8,7 +8,8 @@
 ## Form ijk
 
 ### Description of Partitioning Used
-Rows in Array A were divided and sent to different processes. Rows are contigious in memory so when each process gets a row, we are taking advantage  Array B was broadcasted to all the processes. Each process then calculated the product. This resultant product was combined and assembled in the Master process (Process having rank 0).  
+
+Rows in Array A were divided and sent to different processes. Rows are contigious in memory so when each process gets a row, we are taking advantage spatial locality. Array B was broadcasted to all the processes. Each process then calculated the product. This resultant product was combined and assembled in the Master process (Process having rank 0). A variable called sum was used inside the k loop to take advantage of Temporal locality (because it is referenced several times in the k loop). If local\_c[i * matrixSize + j] was used in the k loop instead, a lot of cache would be wasted as large chunks (elements) of array local_c will be in the cache.
 
 ### Timings
 
@@ -48,6 +49,8 @@ Graph of Efficiency
 
 ### Description of Partitioning Used
 
+Rows in Array A were divided and sent to different processes. Rows are contigious in memory so when each process gets a row, we are taking advantage spatial locality. Array B was broadcasted to all the processes. Each process then calculated the product. This resultant product was combined and assembled in the Master process (Process having rank 0). A variable called r was used inside the j loop (inner most loop) to take advantage of Temporal locality (because it is referenced consecutively several times in the j loop). If local\_a[i * matrixSize + k] was used instead of r, a lot of cache would be wasted as large chunks (elements) of array local_a would likely be in the cache.
+
 ### Timings
 
 Timings for n = 4800
@@ -84,6 +87,8 @@ Graph of Efficiency
 ## Form kij
 
 ### Description of Partitioning Used
+
+Rows in Array A were divided and sent to different processes. Rows are contigious in memory so when each process gets a row, we are taking advantage spatial locality. Array B was broadcasted to all the processes. Each process then calculated the product. This resultant product was combined and assembled in the Master process (Process having rank 0). A variable called r was used inside the j loop (inner most loop) to take advantage of Temporal locality (because it is referenced consecutively several times in the j loop). If local\_a[i * matrixSize + k] was used instead of r, a lot of cache would be wasted as large chunks/elements of array local_a, which would be unnecessary, would likely be in the cache.
 
 ### Timings
 
