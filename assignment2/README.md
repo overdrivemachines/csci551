@@ -15,7 +15,7 @@ Rows in Array A were divided and sent to different processes. Rows are contigiou
 
 Timings for n = 4800. Minimum times are shown in bold.
 
-| \# Cores | Time (ms) |||||
+| \# Cores | Time (s) |||||
 |---|---|---|---|---|---|
 | 1 | 6.482730e+02 | **6.301806e+02** | 6.356979e+02 | 6.456381e+02 | 7.743673e+02 |
 | 4 | **1.688437e+02** | 2.879936e+02 | 1.690258e+02 | 4.463490e+02 | 4.340871e+02 |
@@ -124,3 +124,5 @@ Graph of Efficiency
 ![Efficiency kij](https://drive.google.com/uc?export=download&id=0B1-D_TgyHJtMaG5FZUxEUjE4MFU)
 
 ## Observations, Analysis and Conclusions
+
+For all 3 forms (ijk, ikj and kij), the speedup plateaus by 16 processors and then decreases with 20 processors. Also, the efficiency decreases as more cores are added. The speedup graphs exhibit a two-stage behavior: Speedup increases linearly as long as number of cores <= 16 after which Speedup decreases. This may be a sign that the overhead, i.e. the time spent in managing parallelism, becomes too high when the size of the problem is too small for that number of processors.
