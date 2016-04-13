@@ -102,6 +102,9 @@ int main(void)
 				b[i] = rand() % 100;
 			}
 		}
+
+		printf("Form %s\n", form);
+		printf("running on %d processors\n", comm_sz);
 	}
 
 	// Synchronization
@@ -240,17 +243,17 @@ int main(void)
 	{
 		// Record the Finish Time
 		finish_time = MPI_Wtime();
-
-		printf("running on %d processors\n", comm_sz);
 		printf("elapsed time = %.6e seconds\n", finish_time - start_time);
-		printf("A:\n");
-		printMatrix(a, matrixSize);
-		printf("B:\n");
-		printMatrix(b, matrixSize);
-		printf("C:\n");
-		printMatrix(c, matrixSize);
+		// printf("A:\n");
+		// printMatrix(a, matrixSize);
+		// printf("B:\n");
+		// printMatrix(b, matrixSize);
+		// printf("C:\n");
+		if (flag=='I')
+			printMatrix(c, matrixSize);
 	}
- 	
+
+	// Free memory... 	
  	// free(a);
  	free(b);
  	free(c);
