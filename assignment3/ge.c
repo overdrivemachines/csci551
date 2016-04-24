@@ -3,14 +3,38 @@
 #include <omp.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+
+void swapRow(double **a, double **b)
+{
+	double *temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+void displayAugmentedMatrix(double **a, int matrixSize)
+{
+	int i, j;
+	for (i = 0; i < matrixSize; ++i)
+	{
+		for (j = 0; j < matrixSize + 1; ++j)
+		{
+			// printf("%.6e ", a[i*matrixSize + j]);
+			printf("%2.2f ", a[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
 
 int main(int argc, char const *argv[])
 {
 	int matrixSize = strtol(argv[1], NULL, 10);
 	int thread_count = strtol(argv[2], NULL, 10);
 	double **a;	// n x n Matrix as a 1D array
+	double *bestRow;
 	double diagonalElement;
-	int bestRow = 0;
+	int bestRowIndex = 0;
 
 	int i, j, k;	// for loop counters
 
@@ -30,24 +54,12 @@ int main(int argc, char const *argv[])
 		a[i] = (double *) malloc((matrixSize+1) * sizeof(double));
 		for (j = 0; j < matrixSize + 1; ++j)
 		{
-			if (rand() % 2 == 0)
-				a[i][j] = drand48() * 1.0e6;
-			else
-				a[i][j] = -1 * drand48() * 1.0e6;
+			a[i][j] = -1.0e6 + drand48() * (2.0e6);
 		}		
 	}
 
 	// Display augmented matrix:
-	for (i = 0; i < matrixSize; ++i)
-	{
-		for (j = 0; j < matrixSize + 1; ++j)
-		{
-			// printf("%.6e ", a[i*matrixSize + j]);
-			printf("%f ", a[i][j]);
-		}
-		printf("\n");
-	}
-	printf("\n");
+	displayAugmentedMatrix(a, matrixSize);
 
 	// For each column, annihilate below the diagonal
 	// for (i = 0; i < matrixSize - 1; ++i)
@@ -69,42 +81,44 @@ int main(int argc, char const *argv[])
 	{
 		// Diagonal Element
 		diagonalElement = a[i][i];
+		printf("diagonalElement = %f\n", diagonalElement);
 
 		// Find the best row (the one with the largest absolute value in the column being worked on)
-		bestRow = i;
+		bestRowIndex = i;
 		for (j = i + 1; j < matrixSize; ++j)
 		{
-			if (a[j][i] > diagonalElement)
-				bestRow = j;
+			if (fabs(a[j][i]) > fabs(diagonalElement))
+				bestRowIndex = j;
 		}
+
+		// printf("Best row = %d %f\n", bestRowIndex, a[bestRowIndex][i]);
 
 		// Swap the rows
-		
-
-		for (j = 0; j < matrixSize+1; ++j)
-			a[i*matrixSize + j] = a[i*matrixSize + j] / diagonalElement;
-
-		printf("diagonalElement = %f\n", diagonalElement);
-		for (j = i + 1; j < matrixSize; ++j)
+		if (i != bestRowIndex)
 		{
-			for (k = 0; k < matrixSize + 1; ++k)
-			{
-				// a[j*matrixSize + k] = a[j*matrixSize + k] - ;
-			}
+			printf("Row %d needs to be swapped with Row %d\n", i, bestRowIndex );
+			// double *temp;
+			// temp = a[i];
+			// a[i] = a[bestRowIndex];
+			// a[bestRowIndex] = temp;
+			swapRow(&a[i], &a[bestRowIndex]);		
 		}
+
+		// for (j = 0; j < matrixSize+1; ++j)
+		// 	a[i*matrixSize + j] = a[i*matrixSize + j] / diagonalElement;
+
+		// printf("diagonalElement = %f\n", diagonalElement);
+		// for (j = i + 1; j < matrixSize; ++j)
+		// {
+		// 	for (k = 0; k < matrixSize + 1; ++k)
+		// 	{
+		// 		// a[j*matrixSize + k] = a[j*matrixSize + k] - ;
+		// 	}
+		// }
 	}
 
 	// Display augmented matrix:
-	// for (i = 0; i < matrixSize; ++i)
-	// {
-	// 	for (j = 0; j < matrixSize + 1; ++j)
-	// 	{
-	// 		// printf("%.6e ", a[i*matrixSize + j]);
-	// 		printf("%f ", a[i*matrixSize + j]);
-	// 	}
-	// 	printf("\n");
-	// }
-	// printf("\n");
+	displayAugmentedMatrix(a, matrixSize);
 	
 
 	// Free memory
