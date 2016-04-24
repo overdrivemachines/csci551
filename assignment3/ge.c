@@ -134,7 +134,20 @@ int main(int argc, char const *argv[])
 	// Display augmented matrix:
 	displayAugmentedMatrix(a, matrixSize);
 
-	
+
+	// Back substitution
+	for (i = matrixSize-1; i >= 0; --i)
+	{
+		factor = a[i][matrixSize];
+		debug_printf("factor = %f\n", factor);
+		for (j = 0; j < i; ++j)
+		{
+			a[j][matrixSize] = a[j][matrixSize] - factor * a[j][i];
+			a[j][i] = 0;
+		}
+	}
+
+	displayAugmentedMatrix(a, matrixSize);
 
 	// Free memory
 	free(a);
