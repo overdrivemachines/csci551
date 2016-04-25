@@ -11,62 +11,44 @@
 #include <time.h>
 #include <math.h>
 
-void swapRow(double **a, double **b)
-{
-	double *temp = *a;
-	*a = *b;
-	*b = temp;
-}
+void Gen_matrix(double ***A, int matrixSize, int threadCount);
+void Read_matrix(double ***A, int matrixSize);
+void swapRow(double **a, double **b);
+void displayAugmentedMatrix(double **a, int matrixSize);
+void backSubstitution(double ***A, int matrixSize, int threadCount);
 
-void displayAugmentedMatrix(double **a, int matrixSize)
-{
-	int i, j;
-	for (i = 0; i < matrixSize; ++i)
-	{
-		for (j = 0; j < matrixSize + 1; ++j)
-		{
-			// printf("%.6e ", a[i*matrixSize + j]);
-			printf("%2.2f ", a[i][j]);
-		}
-		printf("\n");
-	}
-	printf("\n");
-}
 
 int main(int argc, char const *argv[])
 {
 	int matrixSize = strtol(argv[1], NULL, 10);
-	int thread_count = strtol(argv[2], NULL, 10);
+	int coreCount = omp_get_num_procs();
+	int threadCount = strtol(argv[2], NULL, 10);
+	double startTime, finishTime;
+	// int thread_count;
 	double **a;	// n x n Matrix as a 1D array
-	double *bestRow;
+	double *bestRow; // used in partial pivoting
 	double diagonalElement, bestElement, factor;
-	int bestRowIndex = 0;
-
+	int bestRowIndex = 0; // used in partial pivoting (index of row having greatest absolute value)
 	int i, j, k;	// for loop counters
 
 	printf("Matrix Size: %d\n", matrixSize);
-	printf("Thread Count: %d\n", thread_count);
+	printf("Number of Cores: %d\n", coreCount);
+	printf("Thread Count: %d\n", threadCount);
 
 	// Allocate memory
 	// a will be the augmented matrix
 	a = (double **) malloc(matrixSize * sizeof(double *));
 
-	srand(time(NULL));
-	srand48(time(NULL));
+	startTime = omp_get_wtime();
+	if (DEBUG == 1)
+		Read_matrix(&a, matrixSize);
+	else
+		Gen_matrix(&a, matrixSize, threadCount);
 
-	// Fill augmented matrix with random numbers in the range [-1.0e6, 1.0e6)
-	for (i = 0; i < matrixSize; ++i)
-	{
-		a[i] = (double *) malloc((matrixSize+1) * sizeof(double));
-		for (j = 0; j < matrixSize + 1; ++j)
-		{
-			// generating random number
-			// drand48() returns [0, 1)
-			// a[i][j] = -1.0e6 + drand48() * (2.0e6);
-			// a[i][j] = rand() % 10;
-			scanf("%lf",&a[i][j]);
-		}		
-	}
+	finishTime = omp_get_wtime();
+	printf("Time taken to generate matrix = %f\n", finishTime - startTime);
+
+	exit(0);
 
 	// Display augmented matrix:
 	displayAugmentedMatrix(a, matrixSize);
@@ -128,6 +110,7 @@ int main(int argc, char const *argv[])
 		}
 	}
 
+	// Last row
 	a[matrixSize-1][matrixSize] = a[matrixSize-1][matrixSize] / a[matrixSize-1][matrixSize-1];
 	a[matrixSize-1][matrixSize-1] = 1;
 
@@ -136,20 +119,96 @@ int main(int argc, char const *argv[])
 
 
 	// Back substitution
-	for (i = matrixSize-1; i >= 0; --i)
-	{
-		factor = a[i][matrixSize];
-		debug_printf("factor = %f\n", factor);
-		for (j = 0; j < i; ++j)
-		{
-			a[j][matrixSize] = a[j][matrixSize] - factor * a[j][i];
-			a[j][i] = 0;
-		}
-	}
+	backSubstitution(&a, matrixSize, threadCount);
 
 	displayAugmentedMatrix(a, matrixSize);
+
 
 	// Free memory
 	free(a);
 	return 0;
+}
+
+void Gen_matrix(double ***A, int matrixSize, int threadCount)
+{
+	double **a = *A;
+	int i, j; // Loop counters
+	srand(time(NULL));
+	srand48(time(NULL));
+	// Fill augmented matrix with random numbers in the range [-1.0e6, 1.0e6)
+	#pragma omp parallel for num_threads(threadCount) \
+		default(none) private(i, j) shared(a, matrixSize)
+	for (i = 0; i < matrixSize; ++i)
+	{
+		// printf("My rank = %d i = %d\n", omp_get_thread_num(), i);
+		// sleep(1);
+		a[i] = (double *) malloc((matrixSize+1) * sizeof(double));
+		for (j = 0; j < matrixSize + 1; ++j)
+		{
+			// generating random number
+			// drand48() returns [0, 1)
+			a[i][j] = -1.0e6 + drand48() * (2.0e6);
+			// a[i][j] = rand() % 10;
+		}
+	}
+}
+
+void Read_matrix(double ***A, int matrixSize)
+{
+	double **a = *A;
+	int i, j; // Loop counters
+	// Fill augmented matrix from standard input
+	for (i = 0; i < matrixSize; ++i)
+	{
+		a[i] = (double *) malloc((matrixSize+1) * sizeof(double));
+		for (j = 0; j < matrixSize + 1; ++j)
+		{
+			// Read input from user
+			scanf("%lf", &a[i][j]);
+		}
+	}
+}
+
+void swapRow(double **a, double **b)
+{
+	double *temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+void displayAugmentedMatrix(double **a, int matrixSize)
+{
+	int i, j;
+	for (i = 0; i < matrixSize; ++i)
+	{
+		for (j = 0; j < matrixSize + 1; ++j)
+		{
+			// printf("%.6e ", a[i*matrixSize + j]);
+			printf("%2.2f ", a[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+void backSubstitution(double ***A, int matrixSize, int threadCount)
+{
+	double **a = *A;
+	int i, j; // Loop counters
+	double factor;
+
+	for (i = matrixSize-1; i >= 0; --i)
+	{
+		factor = a[i][matrixSize];
+
+		#pragma omp parallel for num_threads(threadCount) \
+			default(none) private(j) shared(a, i, matrixSize, factor)
+		for (j = 0; j < i; ++j)
+		{
+			debug_printf("Hello from thread %d\n", omp_get_thread_num());
+			sleep(1);
+			a[j][matrixSize] = a[j][matrixSize] - factor * a[j][i];
+			a[j][i] = 0;
+		}
+	}
 }
