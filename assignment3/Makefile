@@ -9,7 +9,7 @@ ge: ge.c
 	$(IC) $(CFLAGS) -o ge ge.c
 
 debug: ge.c
-	$(IC) $(CFLAGS) -DDEBUG=1 -o ge ge.c
+	$(IC) $(CFLAGS) -DDEBUG=1 -o ge ge.c && cat input.txt | ./ge 4 4 
 
 test: test.c
 	$(IC) $(CFLAGS) -o test test.c
