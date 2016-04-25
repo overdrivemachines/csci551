@@ -136,8 +136,10 @@ void Gen_matrix(double ***A, int matrixSize, int threadCount)
 	srand(time(NULL));
 	srand48(time(NULL));
 	// Fill augmented matrix with random numbers in the range [-1.0e6, 1.0e6)
-	#pragma omp parallel for num_threads(threadCount) \
-		default(none) private(i, j) shared(a, matrixSize)
+	
+	//	No point of parallelization. Parallelization takes more time
+	// #pragma omp parallel for num_threads(threadCount) \
+	// 	default(none) private(i, j) shared(a, matrixSize)
 	for (i = 0; i < matrixSize; ++i)
 	{
 		// printf("My rank = %d i = %d\n", omp_get_thread_num(), i);
