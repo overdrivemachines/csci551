@@ -205,8 +205,6 @@ void backSubstitution(double ***A, int matrixSize, int threadCount)
 			default(none) private(j) shared(a, i, matrixSize, factor)
 		for (j = 0; j < i; ++j)
 		{
-			debug_printf("Hello from thread %d\n", omp_get_thread_num());
-			sleep(1);
 			a[j][matrixSize] = a[j][matrixSize] - factor * a[j][i];
 			a[j][i] = 0;
 		}
