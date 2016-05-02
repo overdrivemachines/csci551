@@ -16,7 +16,7 @@ void Read_matrix(double ***A, double ***A_augmented, int matrixSize);
 void swapRow(double **a, double **b);
 void displayMatrix(double **a, int matrixSize);
 void backSubstitution(double ***A_augmented, int matrixSize, int threadCount);
-// void iSquaredNorm(double ***A, double **X, int matrixSize, int threadCount);
+void iSquaredNorm(double ***A, double *X, int matrixSize, int threadCount);
 
 
 int main(int argc, char const *argv[])
@@ -26,11 +26,10 @@ int main(int argc, char const *argv[])
 	int threadCount = strtol(argv[2], NULL, 10);
 	double startTime, finishTime;
 	double **a_augmented, **a;	// n x n Matrix as a 2D array
-	double *bestRow; // used in partial pivoting
 	double diagonalElement, bestElement, factor;
-	int bestRowIndex = 0; // used in partial pivoting (index of row having greatest absolute value)
-	int i, j, k;	// for loop counters
-	double *x;	//	Solutions
+	int bestRowIndex = 0; 	// used in partial pivoting (index of row having greatest absolute value)
+	int i, j, k;			// for loop counters
+	double *x;				// Solutions
 
 	printf("Matrix Size: %d\n", matrixSize);
 	printf("Number of Cores: %d\n", coreCount);
@@ -64,11 +63,17 @@ int main(int argc, char const *argv[])
 
 	for (i = 0; i < matrixSize - 1; ++i)
 	{
+		// Partial Pivoting: 
+		// the algorithm selects the entry with largest absolute value from 
+		// the column of the matrix that is currently being considered as 
+		// the pivot element. 
+
 		// Diagonal Element
 		diagonalElement = a_augmented[i][i];
 		// debug_printf("diagonalElement%d = %f\n", i, diagonalElement);
 
-		// Find the best row (the one with the largest absolute value in the column being worked on)
+		// Find the best row (the one with the largest absolute value in the 
+		// column being worked on)
 		bestRowIndex = i;
 		bestElement = diagonalElement;
 		for (j = i + 1; j < matrixSize; ++j)
@@ -92,7 +97,10 @@ int main(int argc, char const *argv[])
 			// displayMatrix(a_augmented, matrixSize);
 		}
 
-		// To make the diagonal element 1, divide the whole row with the diagonal element
+		// End of Partial Pivoting
+
+		// To make the diagonal element 1, 
+		// divide the whole row with the diagonal element
 		// debug_printf("Row %d = Row %d / %f\n", i, i, diagonalElement);
 		for (j = 0; j < matrixSize + 1; ++j)
 		{
@@ -115,7 +123,7 @@ int main(int argc, char const *argv[])
 					a_augmented[j][k] = a_augmented[j][k] - factor * a_augmented[i][k];
 				}
 				// displayAugmentedMatrix(a, matrixSize);
-			}			
+			}
 		}
 	}
 
@@ -133,18 +141,24 @@ int main(int argc, char const *argv[])
 
 	// Matrix X from augmented matrix:
 	for (i = 0; i < matrixSize; ++i)
-	{
 		x[i] = a_augmented[i][matrixSize];
-	}
 
 	// Find I^2 norm
-	// iSquaredNorm(a, x, matrixSize, threadCount);
+	iSquaredNorm(&a, x, matrixSize, threadCount);
 
 	finishTime = omp_get_wtime();
-	printf("Time taken = %f\n", finishTime - startTime);	
+	printf("Time taken = %f\n", finishTime - startTime);
+
 
 	// Free memory
+	for (i = 0; i < matrixSize; ++i)
+	{
+		free(a[i]);
+		free(a_augmented[i]);
+	}
 	free(a);
+	free(a_augmented);
+	free(x);
 	return 0;
 }
 
@@ -216,7 +230,7 @@ void displayMatrix(double **a, int matrixSize)
 		for (j = 0; j < matrixSize + 1; ++j)
 		{
 			// printf("%.6e ", a[i*matrixSize + j]);
-			printf("%2.2f ", a[i][j]);
+			printf("%f ", a[i][j]);
 		}
 		printf("\n");
 	}
@@ -243,14 +257,15 @@ void backSubstitution(double ***A_augmented, int matrixSize, int threadCount)
 	}
 }
 
-// void iSquaredNorm(double ***A, double **X, int matrixSize, int threadCount)
-// {
-// 	double **a = *A;
-// 	double *x = *X;
-// 	int i, j; // Loop counters
+void iSquaredNorm(double ***A, double *X, int matrixSize, int threadCount)
+{
+	double **a = *A;
+	double *x = X;
+	int i, j; // Loop counters
 
-// 	for (i = 0; i < matrixSize; ++i)
-// 	{
-// 		// a[i][matrixSize] = a[i][i] * 
-// 	}
-// }
+	for (i = 0; i < matrixSize; ++i)
+	{
+		printf("%f\n", x[i]);
+		// a[i][matrixSize] = a[i][i] * 
+	}
+}
