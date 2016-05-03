@@ -16,4 +16,4 @@ cd ~jch-04/assignment3
 
 ### record the date, then time your executable program
 date
-/usr/bin/time ./ge "10" "$1"
+/usr/bin/time ./ge "8000" "$1"
