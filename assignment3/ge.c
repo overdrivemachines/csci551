@@ -1,8 +1,20 @@
+/**
+ * Programming Assignment - Gaussian Elimination with OpenMP
+ * Due: Before Wednesday May 4 2016, 11pm
+ * Assignment Link: http://www.ecst.csuchico.edu/~judyc/1516S-csci551/assignments/04-Gaussian.html
+ * Author: Dipen Chauhan
+ * Description: 
+ * This program implements a parallel version of Gaussian elimination with 
+ * partial pivoting.
+ */
 #ifndef DEBUG
 #define DEBUG 0
 #endif
-#define debug_printf(fmt, ...) \
-            do { if (DEBUG) printf(fmt, __VA_ARGS__); } while (0)
+// #define debug_printf(fmt, ...) \
+//             do { if (DEBUG) printf(fmt, __VA_ARGS__); } while (0)
+
+#define debug_printf(...) \
+            do { if (DEBUG) printf(__VA_ARGS__); } while (0)
             
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +28,7 @@ void Read_matrix(double ***A, double ***A_augmented, int matrixSize);
 void swapRow(double **a, double **b);
 void displayMatrix(double **a, int matrixSize);
 void backSubstitution(double ***A_augmented, int matrixSize, int threadCount);
-void iSquaredNorm(double ***A, double *X, int matrixSize, int threadCount);
+void iSquaredNorm(double ***A, double *X, double *B, int matrixSize, int threadCount);
 
 
 int main(int argc, char const *argv[])
@@ -30,6 +42,7 @@ int main(int argc, char const *argv[])
 	int bestRowIndex = 0; 	// used in partial pivoting (index of row having greatest absolute value)
 	int i, j, k;			// for loop counters
 	double *x;				// Solutions
+	double *b;
 
 	printf("Matrix Size: %d\n", matrixSize);
 	printf("Number of Cores: %d\n", coreCount);
@@ -49,6 +62,7 @@ int main(int argc, char const *argv[])
 	// a will be the randomly generated matrix
 	a = (double **) malloc(matrixSize * sizeof(double *));
 	x = (double *) malloc(matrixSize * sizeof(double));
+	b = (double *) malloc(matrixSize * sizeof(double));
 	
 	if (DEBUG == 1)
 		Read_matrix(&a, &a_augmented, matrixSize);
@@ -111,9 +125,13 @@ int main(int argc, char const *argv[])
 		a_augmented[i][i] = 1;
 		diagonalElement = 1;
 
+		// debug_printf("Annihilation of column %d...\n", i);
 		// Annihilation: Zero all the elements in the row below the diagonal element
+		#pragma omp parallel for num_threads(threadCount) \
+			default(none) private(j, factor, k) shared(i, matrixSize, a_augmented)
 		for (j = i + 1; j < matrixSize; ++j)
 		{
+			// sleep(1);
 			factor = a_augmented[j][i];
 			if (factor != 0)
 			{
@@ -137,16 +155,22 @@ int main(int argc, char const *argv[])
 	// Back substitution (parallelized)
 	backSubstitution(&a_augmented, matrixSize, threadCount);
 
+	finishTime = omp_get_wtime();
+
 	displayMatrix(a_augmented, matrixSize);
 
-	// Matrix X from augmented matrix:
+	// Matrix X from augmented matrix
+	// Vector b from matrix A
 	for (i = 0; i < matrixSize; ++i)
+	{
 		x[i] = a_augmented[i][matrixSize];
+		b[i] = a[i][matrixSize];
+	}
 
 	// Find I^2 norm
-	iSquaredNorm(&a, x, matrixSize, threadCount);
+	iSquaredNorm(&a, x, b, matrixSize, threadCount);
 
-	finishTime = omp_get_wtime();
+	
 	printf("Time taken = %f\n", finishTime - startTime);
 
 
@@ -159,6 +183,7 @@ int main(int argc, char const *argv[])
 	free(a);
 	free(a_augmented);
 	free(x);
+	free(b);
 	return 0;
 }
 
@@ -230,11 +255,11 @@ void displayMatrix(double **a, int matrixSize)
 		for (j = 0; j < matrixSize + 1; ++j)
 		{
 			// printf("%.6e ", a[i*matrixSize + j]);
-			printf("%f ", a[i][j]);
+			debug_printf("%f ", a[i][j]);
 		}
-		printf("\n");
+		debug_printf("\n");
 	}
-	printf("\n");
+	debug_printf("\n");
 }
 
 void backSubstitution(double ***A_augmented, int matrixSize, int threadCount)
@@ -257,15 +282,54 @@ void backSubstitution(double ***A_augmented, int matrixSize, int threadCount)
 	}
 }
 
-void iSquaredNorm(double ***A, double *X, int matrixSize, int threadCount)
+void iSquaredNorm(double ***A, double *X, double *B, int matrixSize, int threadCount)
 {
 	double **a = *A;
 	double *x = X;
+	double *b = B;
+	double *residualVector = (double *) malloc(matrixSize * sizeof(double));
+	double iSquaredNorm = 0;
 	int i, j; // Loop counters
+
+	// debug_printf("%s", "A:\n");
+	// for (i = 0; i < matrixSize; ++i)
+	// {
+	// 	for (j = 0; j < matrixSize; ++j)
+	// 	{
+	// 		debug_printf("%f ", a[i][j]);
+	// 	}
+	// 	debug_printf("%s", "\n");
+	// }
+
+	// debug_printf("%s\n", "X:");
+	// for (i = 0; i < matrixSize; ++i)
+	// {
+	// 	debug_printf("%f ", x[i]);
+	// }
+	// debug_printf("%s\n", "");
+	// debug_printf("%s\n", "B:");
+	// for (i = 0; i < matrixSize; ++i)
+	// {
+	// 	debug_printf("%f ", b[i]);
+	// }
+	// debug_printf("%s", "\n");
 
 	for (i = 0; i < matrixSize; ++i)
 	{
-		printf("%f\n", x[i]);
-		// a[i][matrixSize] = a[i][i] * 
+		residualVector[i] = 0;
+		for (j = 0; j < matrixSize; ++j)
+		{
+			residualVector[i] = residualVector[i] + (a[i][j]*x[j]);
+		}
+
+		residualVector[i] = residualVector[i] - b[i];
+
+		iSquaredNorm = iSquaredNorm + pow(residualVector[i], 2);
+
+		debug_printf("residualVector[%d] = %8e\n", i, residualVector[i]);
 	}
+
+	printf("I squared norm = %8e\n", sqrt(iSquaredNorm));
+
+	free(residualVector);
 }
