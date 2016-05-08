@@ -22,7 +22,7 @@ I used an array of array pointers to represent the augmented matrix.
 
 Problem size n = 8000 was used to evaluate the performance of my implementation. Timing measurements for the combination of the elimination and back substitution phases of my implementation were collected.
 
-| Cores |            |            |            |            |            |
+| Cores | Time in seconds           |||||
 |-------|------------|------------|------------|------------|------------|
 | 1     | 570.318198 | 570.140426 | 642.862851 | 648.233734 | 648.171710 |
 | 2     | 420.283759 | 421.882246 | 431.313673 | 432.813073 | 419.426101 |
