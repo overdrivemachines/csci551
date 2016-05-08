@@ -155,6 +155,7 @@ int main(int argc, char const *argv[])
 	// Back substitution (parallelized)
 	backSubstitution(&a_augmented, matrixSize, threadCount);
 
+	// Record the finish time
 	finishTime = omp_get_wtime();
 
 	displayMatrix(a_augmented, matrixSize);
@@ -170,7 +171,7 @@ int main(int argc, char const *argv[])
 	// Find I^2 norm
 	iSquaredNorm(&a, x, b, matrixSize, threadCount);
 
-	
+	// Print the time taken
 	printf("Time taken = %f\n", finishTime - startTime);
 
 
@@ -187,6 +188,17 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
+/**
+ * Gen_matrix - generates matrix A and vector b and stores them in an augmented matrix.
+ * 				Matrix A is also stored separately. Numbers in the matrix are randomly
+ * 				generated and range from [-1.0e6, 1.0e6)
+ * @param A           Matrix A - size matrixSize x matrixSize - values will be
+ *                    updated by the function
+ * @param A_augmented Augmented Matrix A - size matrixSize x (matrixSize+1) - values will be
+ *                    updated by the function
+ * @param matrixSize  Size of Matrix
+ * @param threadCount Number of threads
+ */	
 void Gen_matrix(double ***A, double ***A_augmented, int matrixSize, int threadCount)
 {
 	double **a = *A;
@@ -220,6 +232,14 @@ void Gen_matrix(double ***A, double ***A_augmented, int matrixSize, int threadCo
 	}
 }
 
+/**
+ * Read_matrix - Reads matrix from standard input (instead of randomly generating) 
+ * @param A           Matrix A - size matrixSize x matrixSize - values will be
+ *                    updated by the function
+ * @param A_augmented Augmented Matrix A - size matrixSize x (matrixSize+1) - values will be
+ *                    updated by the function
+ * @param matrixSize  Size of Matrix
+ */
 void Read_matrix(double ***A, double ***A_augmented, int matrixSize)
 {
 	double **a = *A;
@@ -240,6 +260,11 @@ void Read_matrix(double ***A, double ***A_augmented, int matrixSize)
 	}
 }
 
+/**
+ * swapRow - Interchange row pointers
+ * @param a pointer to first row (array of doubles)
+ * @param b pointer to second row (array of doubles)
+ */
 void swapRow(double **a, double **b)
 {
 	double *temp = *a;
@@ -247,6 +272,11 @@ void swapRow(double **a, double **b)
 	*b = temp;
 }
 
+/**
+ * displayMatrix Prints the matrix on the screen
+ * @param a          Matrix that will be printed
+ * @param matrixSize Size of the matrix
+ */
 void displayMatrix(double **a, int matrixSize)
 {
 	int i, j;
@@ -262,6 +292,12 @@ void displayMatrix(double **a, int matrixSize)
 	debug_printf("\n");
 }
 
+/**
+ * backSubstitution Performs back substitution algorithm (parallelized)
+ * @param A_augmented Augmented matrix which is annihilated
+ * @param matrixSize  Size of the matrix
+ * @param threadCount Number of threads
+ */
 void backSubstitution(double ***A_augmented, int matrixSize, int threadCount)
 {
 	double **a_augmented = *A_augmented;
@@ -282,6 +318,18 @@ void backSubstitution(double ***A_augmented, int matrixSize, int threadCount)
 	}
 }
 
+
+/**
+ * iSquaredNorm Calculates the I2 norm of the residual
+ * which is the square root of the sum of the squares of the residual 
+ * vector computed as Ax-b 
+ * @param A           Vector A (which was randomly generated - not augmented)
+ * @param X           Array X, solutions that were calculated with gaussian 
+ *                    elimination w/ partial pivoting
+ * @param B           Array B
+ * @param matrixSize  Size of matrix
+ * @param threadCount Number of threads
+ */
 void iSquaredNorm(double ***A, double *X, double *B, int matrixSize, int threadCount)
 {
 	double **a = *A;
@@ -316,7 +364,7 @@ void iSquaredNorm(double ***A, double *X, double *B, int matrixSize, int threadC
 
 	for (i = 0; i < matrixSize; ++i)
 	{
-		residualVector[i] = 0;
+		residualVector[i] = 0.0;
 		for (j = 0; j < matrixSize; ++j)
 		{
 			residualVector[i] = residualVector[i] + (a[i][j]*x[j]);
