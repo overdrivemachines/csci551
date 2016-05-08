@@ -8,12 +8,20 @@
 
 ### Gaussian Elimination with Partial Pivoting on A:
 
-	```
 	for i=0...n-1
-	
+
+		Pivoting:
+		find p > i such that |a[p][i]| > |a[j][i]| for j > i
+		Switch a[p] with a[i]
+
+		Elimination:
+
+	end
+
+	Back Substitution:
 
 
-	```
+
 # Data Storage
 
 Gaussian elimination is a method for solving matrix equations of the form
