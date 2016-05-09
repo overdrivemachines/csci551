@@ -126,7 +126,7 @@ int main(int argc, char const *argv[])
 		diagonalElement = 1;
 
 		// debug_printf("Annihilation of column %d...\n", i);
-		// Annihilation: Zero all the elements in the row below the diagonal element
+		// Annihilation: Zero all the elements in the column below the diagonal element
 		#pragma omp parallel for num_threads(threadCount) \
 			default(none) private(j, factor, k) shared(i, matrixSize, a_augmented)
 		for (j = i + 1; j < matrixSize; ++j)
