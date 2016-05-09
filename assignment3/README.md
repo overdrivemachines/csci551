@@ -6,19 +6,42 @@
 
 # Pseudocode Showing Key Elements In The Parallelization Strategy
 
-### Gaussian Elimination with Partial Pivoting on A:
+	for i=0...n-2
 
-	for i=0...n-1
-
-		Pivoting:
+		// Pivoting:
 		find p > i such that |a[p][i]| > |a[j][i]| for j > i
 		Switch a[p] with a[i]
 
-		Elimination:
+		// Make the diagonal element of the matrix of this row = 1
+		Row a[i] = Row a[i] / diagonalElement
 
+		// Annihilation: 
+		// Zero all the elements in the column below the diagonal element
+		// Divide iterations of the for loop among threads
+		for j=i+1...n-1 // For each row below i
+			if (a[j][i] ≠ 0)
+				Row a[j] = Row a[j] - factor * Row a[i]
+			end
+		end
 	end
 
+	// Make the diagonal element of the last row 1
+	Row a[n-1] = Row a[n-1] / diagonalElement
+
 	Back Substitution:
+
+	for i=n-1..0
+		sub = a[i][n-1]
+
+		// Back substitute sub in all rows above i
+		// This work can be divided among threads or parallelized.
+		// Depending on the number of the threads, 
+		// each thread either gets no rows or complete row(s)
+		for j=0..i-1
+			a[j][n] = a[j][n] - sub * a[j][i];
+		end
+
+	end
 
 
 
@@ -46,14 +69,14 @@ Synchronization happens (all the threads join) automatically at the end of the b
 
 # Justification for Implementation Choices
 
-As mentioned earlier, I chose to store my matrix as an array of pointers to an array of doubles because it would be easy to swap rows during partial pivoting. All we have to do is interchange the addresses the pointers are pointing to.
+As mentioned earlier, I chose to store my matrix as an array of pointers to an array of doubles because it would be easy to swap rows during partial pivoting. All we have to do is interchange the addresses the pointers are pointing to. Parallelization was done in Annihilation and Back Substitution. The performance benifit in parallelizing Back Substitution might be questionable as only one statement gets executed by each thread in the parallel section. Performance benifit was not observed when parallelizing random generation of the matrix so its implementation was removed and done serially instead.
 
 # Timings
 
 Problem size n = 8000 was used to evaluate the performance of my implementation. Timing measurements for the combination of the elimination and back substitution phases of my implementation were collected.
 
 | # Cores | Time (s)           |||||
-|-------|------------|------------|------------|------------|------------|
+|------:|------------|------------|------------|------------|------------|
 | 1     | 570.318198 | **570.140426** | 642.862851 | 648.233734 | 648.171710 |
 | 2     | 420.283759 | 421.882246 | 431.313673 | 432.813073 | **419.426101** |
 | 5     | 248.244881 | 247.548421 | **241.307507** | 242.004513 | 241.986887 |
@@ -66,8 +89,19 @@ Problem size n = 8000 was used to evaluate the performance of my implementation.
 
 Table of Speedup and Efficiency calculated from the minimums
 
+| # Cores | Time       | Speedup     | Efficiency  | 
+|--------:|------------|-------------|-------------| 
+| 1       | 570.140426 | 1.000000000 | 1.000000000 | 
+| 2       | 419.426101 | 1.359334635 | 0.679667318 | 
+| 5       | 241.307507 | 2.362713175 | 0.472542635 | 
+| 10      | 213.856487 | 2.665995472 | 0.266599547 | 
+| 20      | 207.847415 | 2.743072008 | 0.137153600 | 
+| 30      | 207.122235 | 2.752676100 | 0.091755870 | 
 
 Graph of Speedup
 
+![Speedup Graph](Speedup.png)
 
 Graph of Efficiency
+
+![Efficiency Graph](Efficiency.png)
