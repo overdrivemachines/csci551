@@ -1,10 +1,10 @@
-# PROJECT REPORT BY DIPEN CHAUHAN
+# ASSIGNMENT 3 PROJECT REPORT BY DIPEN CHAUHAN
 
 ## Objectives
 - Implement a parallel version of Gaussian elimination with partial pivoting.
 - Run timing tests and analyze speedup and efficiency.
 
-# Pseudocode Showing Key Elements In The Parallelization Strategy
+## Pseudocode Showing Key Elements In The Parallelization Strategy
 
 	for i=0...n-2
 
@@ -45,7 +45,7 @@
 
 
 
-# Data Storage
+## Data Storage
 
 Gaussian elimination is a method for solving matrix equations of the form
 Ax = b where A is a Matrix, and x and b are vectors.
@@ -56,22 +56,22 @@ To calculate the I2 norm, I had to store matrix A separately as an array of poin
 
 I chose to store my matrix as an array of pointers to an array of doubles because it would be easy to swap rows during partial pivoting. All we have to do is interchange the addresses the pointers are pointing to.
 
-# Exploiting Parallelism and Partitioning Data & Work
+## Exploiting Parallelism and Partitioning Data & Work
 
 Parallelization was used in 2 sections of my code:
 
 1) Annihilation - During each iteration of the annihilation process, the rows are divided among threads that subtract the row containing the pivot element from the row they are assigned. The number of rows needed to be computed is reduced by one after each iteration.
 2) Back Substitution - During each iteration the rows are divided among threads. Each thread back substitutes with one variable during each iteration. The number of rows needed to be computed is reduced by one after each iteration.
 
-# Synchronization
+## Synchronization
 
 Synchronization happens (all the threads join) automatically at the end of the block following my a #pragma omp parallel statements.
 
-# Justification for Implementation Choices
+## Justification for Implementation Choices
 
 As mentioned earlier, I chose to store my matrix as an array of pointers to an array of doubles because it would be easy to swap rows during partial pivoting. All we have to do is interchange the addresses the pointers are pointing to. Parallelization was done in Annihilation and Back Substitution. The performance benifit in parallelizing Back Substitution might be questionable as only one statement gets executed by each thread in the parallel section. Performance benifit was not observed when parallelizing random generation of the matrix so its implementation was removed and done serially instead.
 
-# Timings
+## Timings
 
 Problem size n = 8000 was used to evaluate the performance of my implementation. Timing measurements for the combination of the elimination and back substitution phases of my implementation were collected.
 
@@ -85,7 +85,7 @@ Problem size n = 8000 was used to evaluate the performance of my implementation.
 | 30    | **207.122235** | 410.145916 | 207.129673 | 219.694855 | 410.346868 |
 
 
-# Speedup and Efficiency
+## Speedup and Efficiency
 
 Table of Speedup and Efficiency calculated from the minimums
 
@@ -98,10 +98,10 @@ Table of Speedup and Efficiency calculated from the minimums
 | 20      | 207.847415 | 2.743072008 | 0.137153600 | 
 | 30      | 207.122235 | 2.752676100 | 0.091755870 | 
 
-Graph of Speedup
+### Graph of Speedup
 
 ![Speedup Graph](Speedup.png)
 
-Graph of Efficiency
+### Graph of Efficiency
 
 ![Efficiency Graph](Efficiency.png)
