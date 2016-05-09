@@ -1,0 +1,240 @@
+Sat May  7 00:54:09 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 1
+I squared norm = 2.194308e-03
+Time taken = 641.886309
+1280.67user 2.56system 10:42.08elapsed 199%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+250692minor)pagefaults 0swaps
+Sat May  7 00:45:10 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 2
+I squared norm = 9.482416e-04
+Time taken = 538.090024
+1551.59user 61.72system 8:58.29elapsed 299%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+250749minor)pagefaults 0swaps
+Sat May  7 00:38:05 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 5
+I squared norm = 2.720464e-03
+Time taken = 423.419349
+3715.28user 48.71system 7:03.62elapsed 888%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+250877minor)pagefaults 0swaps
+Sat May  7 00:32:38 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 10
+I squared norm = 1.907667e-03
+Time taken = 225.289405
+2244.71user 5.40system 3:45.47elapsed 997%CPU (0avgtext+0avgdata 4015792maxresident)k
+0inputs+0outputs (0major+251084minor)pagefaults 0swaps
+Sat May  7 00:31:15 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 20
+I squared norm = 1.373616e-03
+Time taken = 409.814528
+12399.31user 204.52system 6:50.03elapsed 3073%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+251480minor)pagefaults 0swaps
+Sat May  7 00:28:57 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 30
+I squared norm = 2.266062e-03
+Time taken = 219.707950
+6568.30user 13.88system 3:39.92elapsed 2992%CPU (0avgtext+0avgdata 4028144maxresident)k
+0inputs+0outputs (0major+251885minor)pagefaults 0swaps
+Sat May  7 00:19:26 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 1
+I squared norm = 3.198022e-03
+Time taken = 570.208379
+569.85user 0.46system 9:30.38elapsed 99%CPU (0avgtext+0avgdata 4009952maxresident)k
+0inputs+0outputs (0major+250695minor)pagefaults 0swaps
+Sat May  7 00:12:11 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 2
+I squared norm = 2.163032e-03
+Time taken = 433.751602
+861.36user 5.92system 7:13.92elapsed 199%CPU (0avgtext+0avgdata 4010800maxresident)k
+0inputs+0outputs (0major+250753minor)pagefaults 0swaps
+Sat May  7 00:08:03 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 5
+I squared norm = 1.705492e-03
+Time taken = 247.306404
+1230.38user 5.02system 4:07.48elapsed 499%CPU (0avgtext+0avgdata 4012736maxresident)k
+0inputs+0outputs (0major+250878minor)pagefaults 0swaps
+Sat May  7 00:04:17 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 10
+I squared norm = 4.508461e-03
+Time taken = 224.936081
+2241.66user 4.95system 3:45.11elapsed 997%CPU (0avgtext+0avgdata 4015808maxresident)k
+0inputs+0outputs (0major+251080minor)pagefaults 0swaps
+Sat May  7 00:00:33 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 20
+I squared norm = 2.407442e-01
+Time taken = 222.010910
+4427.35user 6.91system 3:42.20elapsed 1995%CPU (0avgtext+0avgdata 4021888maxresident)k
+0inputs+0outputs (0major+251489minor)pagefaults 0swaps
+Fri May  6 23:52:41 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 30
+I squared norm = 2.052639e-03
+Time taken = 410.191283
+17958.74user 419.64system 6:50.42elapsed 4477%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+251889minor)pagefaults 0swaps
+Fri May  6 23:51:02 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 1
+I squared norm = 2.056016e-03
+Time taken = 570.749352
+570.40user 0.45system 9:30.92elapsed 99%CPU (0avgtext+0avgdata 4009952maxresident)k
+0inputs+0outputs (0major+250695minor)pagefaults 0swaps
+Fri May  6 23:43:42 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 2
+I squared norm = 6.069952e-03
+Time taken = 537.776325
+1555.39user 56.99system 8:57.97elapsed 299%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+250749minor)pagefaults 0swaps
+Fri May  6 23:36:37 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 5
+I squared norm = 1.439836e-02
+Time taken = 423.909455
+3326.09user 60.31system 7:04.11elapsed 798%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+250872minor)pagefaults 0swaps
+Fri May  6 23:31:35 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 10
+I squared norm = 9.408691e-04
+Time taken = 224.813259
+2240.29user 5.12system 3:44.99elapsed 997%CPU (0avgtext+0avgdata 4015808maxresident)k
+0inputs+0outputs (0major+251081minor)pagefaults 0swaps
+Fri May  6 23:29:46 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 20
+I squared norm = 3.477932e-03
+Time taken = 409.677879
+12938.49user 205.65system 6:49.89elapsed 3206%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+251488minor)pagefaults 0swaps
+Fri May  6 23:27:54 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 30
+I squared norm = 7.384348e-04
+Time taken = 219.820094
+6571.89user 13.76system 3:40.03elapsed 2993%CPU (0avgtext+0avgdata 4028160maxresident)k
+0inputs+0outputs (0major+251899minor)pagefaults 0swaps
+Fri May  6 23:18:22 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 1
+I squared norm = 1.692250e-03
+Time taken = 570.036244
+569.68user 0.46system 9:30.21elapsed 99%CPU (0avgtext+0avgdata 4009952maxresident)k
+0inputs+0outputs (0major+250695minor)pagefaults 0swaps
+Fri May  6 23:11:09 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 2
+I squared norm = 2.360760e-03
+Time taken = 432.042896
+858.40user 5.46system 7:12.21elapsed 199%CPU (0avgtext+0avgdata 4010784maxresident)k
+0inputs+0outputs (0major+250750minor)pagefaults 0swaps
+Fri May  6 23:07:01 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 5
+I squared norm = 2.983854e-03
+Time taken = 247.245759
+1230.54user 4.52system 4:07.42elapsed 499%CPU (0avgtext+0avgdata 4012720maxresident)k
+0inputs+0outputs (0major+250877minor)pagefaults 0swaps
+Fri May  6 23:04:24 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 10
+I squared norm = 2.637094e-03
+Time taken = 410.817141
+6885.54user 92.76system 6:51.02elapsed 1697%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+251081minor)pagefaults 0swaps
+Fri May  6 22:57:33 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 20
+I squared norm = 1.244166e-03
+Time taken = 409.809507
+12470.18user 195.08system 6:50.02elapsed 3088%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+251471minor)pagefaults 0swaps
+Fri May  6 22:43:12 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 30
+I squared norm = 2.287929e-03
+Time taken = 219.764773
+6570.29user 13.55system 3:39.98elapsed 2992%CPU (0avgtext+0avgdata 4028176maxresident)k
+0inputs+0outputs (0major+251911minor)pagefaults 0swaps
+Fri May  6 22:33:40 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 1
+I squared norm = 2.714244e-03
+Time taken = 570.469455
+570.10user 0.47system 9:30.64elapsed 99%CPU (0avgtext+0avgdata 4009952maxresident)k
+0inputs+0outputs (0major+250695minor)pagefaults 0swaps
+Fri May  6 22:26:27 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 2
+I squared norm = 8.567235e-03
+Time taken = 431.861531
+857.97user 5.53system 7:12.03elapsed 199%CPU (0avgtext+0avgdata 4010800maxresident)k
+0inputs+0outputs (0major+250752minor)pagefaults 0swaps
+Fri May  6 22:22:18 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 5
+I squared norm = 4.663768e-03
+Time taken = 247.658825
+1232.68user 4.46system 4:07.84elapsed 499%CPU (0avgtext+0avgdata 4012736maxresident)k
+0inputs+0outputs (0major+250882minor)pagefaults 0swaps
+Fri May  6 22:18:32 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 10
+I squared norm = 1.223928e-02
+Time taken = 224.930858
+2241.50user 5.10system 3:45.11elapsed 997%CPU (0avgtext+0avgdata 4015808maxresident)k
+0inputs+0outputs (0major+251083minor)pagefaults 0swaps
+Fri May  6 22:14:49 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 20
+I squared norm = 1.426044e-02
+Time taken = 221.980113
+4426.80user 6.91system 3:42.18elapsed 1995%CPU (0avgtext+0avgdata 4021888maxresident)k
+0inputs+0outputs (0major+251472minor)pagefaults 0swaps
+Fri May  6 22:11:08 MDT 2016
+Matrix Size: 8000
+Number of Cores: 40
+Thread Count: 30
+I squared norm = 6.804317e-04
+Time taken = 219.671657
+6567.77user 13.47system 3:39.88elapsed 2993%CPU (0avgtext+0avgdata 4028176maxresident)k
+0inputs+0outputs (0major+251896minor)pagefaults 0swaps
